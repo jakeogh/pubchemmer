@@ -226,6 +226,10 @@ def dbquery(verbose,
             ipython,
             null):
 
+    '''
+    session.bind.execute("select column_name, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'").fetchall()
+    '''
+
     global APP_NAME
     database = 'postgres://postgres@localhost/' + APP_NAME
 
