@@ -228,8 +228,6 @@ def dbquery(verbose,
 
     global APP_NAME
     database = 'postgres://postgres@localhost/' + APP_NAME
-    if delete_database:
-        really_delete_database(database)
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
@@ -244,4 +242,3 @@ def dbquery(verbose,
 
         if ipython:
             import IPython; IPython.embed()
-            break
