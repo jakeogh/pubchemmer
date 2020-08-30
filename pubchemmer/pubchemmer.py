@@ -57,7 +57,7 @@ def parse_pubchem_sdtags(content, verbose=False):
     sdf_keys_dict = {}
     for line in content.splitlines():
         line = line + '\r\n'
-        print(line)
+        #print(line)
         assert isinstance(line, str)
         if line.startswith("PubChem Substance Associated SD Fields"):
             preamble = False
@@ -80,7 +80,7 @@ def parse_pubchem_sdtags(content, verbose=False):
     body = False
     current_key = False
     for line in sdf_format_dict['body'].splitlines():
-        print(line)
+        #print(line)
         if re.match(r"    [A-Z]", line):
             #print(line)
             new_key = line.strip()
@@ -99,6 +99,8 @@ def parse_pubchem_sdtags(content, verbose=False):
 @click.option('--verbose', is_flag=True)
 @click.option('--ipython', is_flag=True)
 def update_sdf_tags_from_pubchem(verbose, ipython):
+    global APP_NAME
+
     url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
     response = requests.get(url)
     content = response.content
@@ -110,6 +112,14 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
     if verbose:
         pprint.pprint(sdf_keys_dict)
 
+    section = "sdf_keys"
+    for key in sdf_keys_dict.keys():
+        config, config_mtime = click_write_config_entry(click_instance=click,
+                                                        app_name=APP_NAME,
+                                                        section=section,
+                                                        key=key,
+                                                        value=vsdf_keys_dict[key],
+                                                        verbose=verbose)
 
 @cli.command()
 @click.argument("paths", type=str, nargs=-1)
