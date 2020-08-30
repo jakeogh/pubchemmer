@@ -214,3 +214,34 @@ def dbimport(paths,
             if ipython:
                 import IPython; IPython.embed()
                 break
+
+
+@cli.command()
+@click.option('--verbose', is_flag=True)
+@click.option('--debug', is_flag=True)
+@click.option('--ipython', is_flag=True)
+@click.option("--null", is_flag=True)
+def dbquery(verbose,
+            debug,
+            ipython,
+            null):
+
+    global APP_NAME
+    database = 'postgres://postgres@localhost/' + APP_NAME
+    if delete_database:
+        really_delete_database(database)
+
+    config, config_mtime = click_read_config(click_instance=click,
+                                             app_name=APP_NAME,
+                                             verbose=verbose)
+    if verbose:
+        ic(config, config_mtime)
+
+
+    with self_contained_session(db_url=database) as session:
+        if verbose:
+            ic(session)
+
+        if ipython:
+            import IPython; IPython.embed()
+            break
