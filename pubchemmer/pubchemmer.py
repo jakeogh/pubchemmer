@@ -118,7 +118,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
                                                         app_name=APP_NAME,
                                                         section=section,
                                                         key=key,
-                                                        value=vsdf_keys_dict[key],
+                                                        value=sdf_keys_dict[key],
                                                         verbose=verbose)
 
 @cli.command()
