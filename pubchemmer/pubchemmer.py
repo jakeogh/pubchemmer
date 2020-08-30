@@ -179,7 +179,8 @@ def dbimport(paths,
             if verbose:
                 ic(index, path)
 
-            for mindex, mdict in enumerate(molecule_dict_generator(path=path, verbose=verbose)):
+            for mindex, mdict in enumerate(molecule_dict_generator(path=path,
+                                                                   verbose=verbose)):
                 if verbose:
                     ic(mdict)
                 mdict_df = pandas.DataFrame(mdict, index=[0])
