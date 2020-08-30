@@ -176,6 +176,9 @@ def dbimport(paths,
         if not paths:
             ic('waiting for input')
 
+        all_sdf_keys = config['sdf_keys'].keys()
+        assert all_sdf_keys
+
         for index, path in enumerate_input(iterator=paths,
                                            null=null,
                                            debug=debug,
@@ -185,6 +188,11 @@ def dbimport(paths,
 
             for mindex, mdict in enumerate(molecule_dict_generator(path=path,
                                                                    verbose=verbose)):
+
+                for key in all_sdf_keys:
+                    if key not in mdict.keys():
+                        mdict[key] = ''
+
                 if verbose:
                     ic(mdict)
                 mdict_df = pandas.DataFrame(mdict, index=[0])
