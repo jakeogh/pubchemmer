@@ -201,10 +201,12 @@ def dbimport(paths,
 
                 if verbose:
                     ic(mdict)
+
+                mdict =  {k.lower(): v for k, v in mdict.items()}
                 mdict_df = pandas.DataFrame(mdict, index=[0])
                 #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
                 mdict_df.to_sql('pubchem', con=session.bind, if_exists='append')
-                ic(mdict['PUBCHEM_IUPAC_NAME'])
+                ic(mdict['pubchem_iupac_name'])
 
                 if debug:
                     if ipython:
