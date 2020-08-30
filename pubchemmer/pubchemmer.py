@@ -66,7 +66,9 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
     sdf_format_dict = {"preamble":'', "body":'', "changelog":''}
     sdf_keys_dict = {}
     for line in content.splitlines():
+        line = line + '\r\n'
         print(line)
+        assert isinstance(line, str)
         if line.startswith("PubChem Substance Associated SD Fields"):
             preamble = False
             body = True
