@@ -135,6 +135,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
+@click.option('--count', type=str)
 @click.option('--delete-database', is_flag=True)
 @click.option("--null", is_flag=True)
 def dbimport(paths,
@@ -142,6 +143,7 @@ def dbimport(paths,
              verbose,
              debug,
              ipython,
+             count,
              delete_database,
              null):
 
@@ -185,6 +187,10 @@ def dbimport(paths,
                                            verbose=verbose):
             if verbose:
                 ic(index, path)
+            if count:
+                if count > index + 1:
+                    ic(count)
+                    sys.exit(1)
 
             for mindex, mdict in enumerate(molecule_dict_generator(path=path,
                                                                    verbose=verbose)):
