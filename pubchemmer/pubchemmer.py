@@ -114,7 +114,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
 
     section = "sdf_keys"
     for key in sdf_keys_dict.keys():
-        ic(key)
+        #ic(key)
         config, config_mtime = click_write_config_entry(click_instance=click,
                                                         app_name=APP_NAME,
                                                         section=section,
@@ -137,6 +137,8 @@ def dbimport(paths,
              ipython,
              null):
 
+    global APP_NAME
+
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
                                              verbose=verbose)
@@ -152,6 +154,7 @@ def dbimport(paths,
                                                         section=section,
                                                         key=key,
                                                         value=value,
+                                                        keep_case=False,
                                                         verbose=verbose)
         if verbose:
             ic(config)
