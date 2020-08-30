@@ -114,6 +114,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
 
     section = "sdf_keys"
     for key in sdf_keys_dict.keys():
+        ic(key)
         config, config_mtime = click_write_config_entry(click_instance=click,
                                                         app_name=APP_NAME,
                                                         section=section,
