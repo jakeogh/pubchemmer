@@ -49,9 +49,9 @@ def cli(ctx):
 @click.option('--ipython', is_flag=True)
 def update_sdf_tags_from_pubchem(verbose, ipython):
     url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
-    content = requests.get(url)
-    if verbose:
-        ic(content)
+    response = requests.get(url)
+    #if verbose:
+    #    ic(content)
 
     if ipython:
         import IPython; IPython.embed()
