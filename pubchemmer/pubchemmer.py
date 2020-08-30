@@ -20,6 +20,8 @@
 import os
 import sys
 import requests
+import re
+import pprint
 import click
 from pathlib import Path
 from icecream import ic
@@ -54,7 +56,54 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
     if ipython:
         import IPython; IPython.embed()
 
-    content = content.splitlines()
+    #content = content.splitlines()
+
+    preamble = True
+    body = False
+    changelog = False
+    sdf_format_dict = {"preamble":'', "body":'', "changelog":''}
+    sdf_keys_dict = {}
+    for line in content.splitlines():
+        print(line)
+        if line.startswith("PubChem Substance Associated SD Fields"):
+            preamble = False
+            body = True
+            changelog = False
+            continue
+        if line.startswith("Document Version History"):
+            preamble = False
+            body = False
+            changelog = True
+            continue
+
+        if preamble:
+            sdf_format_dict['preamble'] += line
+        if body:
+            sdf_format_dict['body'] += line
+        if changelog:
+            sdf_format_dict['changelog'] += line
+
+    body = False
+    current_key = False
+    for line in sdf_format_dict['body'].splitlines():
+        print(line)
+        if re.match(r"    [A-Z]", line):
+            #print(line)
+            new_key = line.strip()
+            current_key = new_key
+            sdf_keys_dict[new_key] = ''
+            body = True
+            continue
+        if body == True:
+            assert current_key
+            sdf_keys_dict[current_key] += line
+
+        #if line.startswith("    "):
+        #    print(line)
+
+    #pprint.pprint(sdf_format_dict)
+
+    pprint.pprint(sdf_keys_dict)
 
 
 
