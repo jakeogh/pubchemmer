@@ -120,7 +120,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
                                                         section=section,
                                                         key=key,
                                                         value=sdf_keys_dict[key],
-                                                        keep_cae=True,
+                                                        keep_case=True,
                                                         verbose=verbose)
 
 @cli.command()
