@@ -147,6 +147,8 @@ def dbimport(paths,
 
     global APP_NAME
     database = 'postgres://postgres@localhost/' + APP_NAME
+    if not paths:
+        ic('waiting for input')
 
     if delete_database:
         really_delete_database(database)
@@ -172,6 +174,8 @@ def dbimport(paths,
     #        ic(config)
 
     with self_contained_session(db_url=database) as session:
+        if verbose:
+            ic(session)
         for index, path in enumerate_input(iterator=paths,
                                            null=null,
                                            debug=debug,
