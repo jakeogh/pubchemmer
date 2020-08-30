@@ -157,19 +157,19 @@ def dbimport(paths,
     if verbose:
         ic(config, config_mtime)
 
-    if add:
-        section = "test_section"
-        key = "test_key"
-        value = "test_value"
-        config, config_mtime = click_write_config_entry(click_instance=click,
-                                                        app_name=APP_NAME,
-                                                        section=section,
-                                                        key=key,
-                                                        value=value,
-                                                        keep_case=False,
-                                                        verbose=verbose)
-        if verbose:
-            ic(config)
+    #if add:
+    #    section = "test_section"
+    #    key = "test_key"
+    #    value = "test_value"
+    #    config, config_mtime = click_write_config_entry(click_instance=click,
+    #                                                    app_name=APP_NAME,
+    #                                                    section=section,
+    #                                                    key=key,
+    #                                                    value=value,
+    #                                                    keep_case=False,
+    #                                                    verbose=verbose)
+    #    if verbose:
+    #        ic(config)
 
     with self_contained_session(db_url=database) as session:
         for index, path in enumerate_input(iterator=paths,
@@ -180,6 +180,8 @@ def dbimport(paths,
                 ic(index, path)
 
             for mindex, mdict in enumerate(molecule_dict_generator(path=path, verbose=verbose)):
+                if verbose:
+                    ic(mdict)
                 mdict_df = pandas.DataFrame(mdict, index=[0])
                 #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
                 mdict_df.to_sql('pubchem', con=session.bind, if_exists='append')
