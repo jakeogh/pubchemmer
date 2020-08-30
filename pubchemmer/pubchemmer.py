@@ -44,21 +44,11 @@ def cli(ctx):
     pass
 
 
-@cli.command()
-@click.option('--verbose', is_flag=True)
-@click.option('--ipython', is_flag=True)
-def update_sdf_tags_from_pubchem(verbose, ipython):
-    url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
-    response = requests.get(url)
-    content = response.content
-    if ipython:
-        import IPython; IPython.embed()
+def parse_pubchem_sdtags(content, verbose=False):
+    assert isinstance(bytes, content)
     content = content.decode('utf8')
     if verbose:
         ic(content)
-
-
-    #content = content.splitlines()
 
     preamble = True
     body = False
@@ -102,13 +92,23 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
             assert current_key
             sdf_keys_dict[current_key] += line
 
-        #if line.startswith("    "):
-        #    print(line)
+    return sdf_keys_dict
 
-    #pprint.pprint(sdf_format_dict)
 
-    pprint.pprint(sdf_keys_dict)
+@cli.command()
+@click.option('--verbose', is_flag=True)
+@click.option('--ipython', is_flag=True)
+def update_sdf_tags_from_pubchem(verbose, ipython):
+    url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
+    response = requests.get(url)
+    content = response.content
+    if ipython:
+        import IPython; IPython.embed()
 
+    sdf_keys_dict = parse_pubchem_sdtags(content, verbose=False)
+
+    if verbose:
+        pprint.pprint(sdf_keys_dict)
 
 
 @cli.command()
