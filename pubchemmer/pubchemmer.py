@@ -187,13 +187,13 @@ def dbimport(paths,
                                            verbose=verbose):
             if verbose:
                 ic(index, path)
-            if count:
-                if count > index + 1:
-                    ic(count)
-                    sys.exit(1)
 
             for mindex, mdict in enumerate(molecule_dict_generator(path=path,
                                                                    verbose=verbose)):
+                if count:
+                    if count > (mindex + 1):
+                        ic(count)
+                        sys.exit(1)
 
                 for key in all_sdf_keys:
                     if key not in mdict.keys():
@@ -205,9 +205,7 @@ def dbimport(paths,
                 #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
                 mdict_df.to_sql('pubchem', con=session.bind, if_exists='append')
                 ic(mdict['PUBCHEM_IUPAC_NAME'])
-                if mindex > 4:
-                    break
-                #break
+
                 if debug:
                     if ipython:
                         import IPython; IPython.embed()
