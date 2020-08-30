@@ -177,7 +177,7 @@ def dbimport(paths,
             ic('waiting for input')
 
         all_sdf_keys = config['sdf_keys'].keys()
-        assert all_sdf_keys
+        assert "PUBCHEM_XLOGP3" in all_sdf_keys
 
         for index, path in enumerate_input(iterator=paths,
                                            null=null,
