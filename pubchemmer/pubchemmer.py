@@ -22,12 +22,18 @@ import sys
 import requests
 import re
 import pprint
+import pandas
 import click
 from pathlib import Path
 from icecream import ic
 from kcl.configops import click_read_config
 from kcl.configops import click_write_config_entry
 from kcl.inputops import enumerate_input
+
+from sqlalchemy_utils.functions import create_database
+from kcl.sqlalchemy.self_contained_session import self_contained_session
+from kcl.sqlalchemy.delete_database import delete_database as really_delete_database
+from structure_data_file_sdf_parser.structure_data_file_sdf_parser import molecule_dict_generator
 
 
 ic.configureOutput(includeContext=True)
@@ -129,15 +135,21 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
+@click.option('--delete-database', is_flag=True)
 @click.option("--null", is_flag=True)
 def dbimport(paths,
              add,
              verbose,
              debug,
              ipython,
+             delete_database,
              null):
 
     global APP_NAME
+    database = 'postgres://postgres@localhost/' + APP_NAME
+
+    if delete_database:
+        really_delete_database(database)
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
@@ -159,17 +171,27 @@ def dbimport(paths,
         if verbose:
             ic(config)
 
-    for index, path in enumerate_input(iterator=paths,
-                                       null=null,
-                                       debug=debug,
-                                       verbose=verbose):
-        if verbose:
-            ic(index, path)
+    with self_contained_session(db_url=database) as session:
+        for index, path in enumerate_input(iterator=paths,
+                                           null=null,
+                                           debug=debug,
+                                           verbose=verbose):
+            if verbose:
+                ic(index, path)
 
-        with open(path, 'rb') as fh:
-            path_bytes_data = fh.read()
+            for mindex, mdict in enumerate(molecule_dict_generator(path=path, verbose=verbose)):
+                mdict_df = pandas.DataFrame(mdict, index=[0])
+                #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
+                mdict_df.to_sql('pubchem', con=session.bind, if_exists='append')
+                ic(mdict['PUBCHEM_IUPAC_NAME'])
+                if mindex > 4:
+                    break
+                #break
+                if debug:
+                    if ipython:
+                        import IPython; IPython.embed()
+                        break
 
-        if ipython:
-            import IPython; IPython.embed()
-
-
+            if ipython:
+                import IPython; IPython.embed()
+                break
