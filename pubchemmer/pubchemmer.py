@@ -45,7 +45,7 @@ def cli(ctx):
 
 
 def parse_pubchem_sdtags(content, verbose=False):
-    assert isinstance(bytes, content)
+    assert isinstance(content, bytes)
     content = content.decode('utf8')
     if verbose:
         ic(content)
