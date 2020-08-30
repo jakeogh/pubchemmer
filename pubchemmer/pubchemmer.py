@@ -51,6 +51,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
     url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
     response = requests.get(url)
     content = response.content
+    content = content.decode('utf8')
     if verbose:
         ic(content)
 
