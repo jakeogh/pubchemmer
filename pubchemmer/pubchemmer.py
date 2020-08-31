@@ -250,13 +250,11 @@ def find(match,
             import IPython; IPython.embed()
 
 @cli.command()
-@click.argument('match', type=str)
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
 @click.option("--null", is_flag=True)
-def dumpconfig(match,
-               verbose,
+def dumpconfig(verbose,
                debug,
                ipython,
                null):
