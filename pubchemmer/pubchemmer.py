@@ -196,7 +196,7 @@ def dbimport(paths,
                                 con=session.bind,
                                 if_exists='append',
                                 index=False)  # data frame index is always 0
-                ic(mdict['pubchem_iupac_name'])
+                ic(mindex, mdict['pubchem_iupac_name'])
 
                 #  'PUBCHEM_COMPOUND_CID':
                 #       PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
