@@ -172,6 +172,7 @@ def dbimport(paths,
     #    if verbose:
     #        ic(config)
 
+    primary_key_created=False
     with self_contained_session(db_url=database) as session:
         if verbose:
             ic(session)
@@ -210,6 +211,8 @@ def dbimport(paths,
                                 if_exists='append',
                                 index=False)  # data frame index is always 0
                 ic(mdict['pubchem_iupac_name'])
+                if not primary_key_created:
+                    session.bind.execute('ALTER TABLE pubchem ADD PRIMARY KEY (`id`);')
 
                 if debug:
                     if ipython:
