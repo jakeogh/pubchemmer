@@ -200,7 +200,7 @@ def dbimport(paths,
 
                 #  'PUBCHEM_COMPOUND_CID': PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
                 if not primary_key_created:
-                    session.bind.execute('ALTER TABLE pubchem ADD PRIMARY KEY (`pubchem_compound_cid`);')
+                    session.bind.execute("ALTER TABLE pubchem ADD PRIMARY KEY ('pubchem_compound_cid');")
                     primary_key_created = True
                 if debug:
                     if ipython:
