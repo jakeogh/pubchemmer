@@ -265,7 +265,7 @@ def dumpconfig(verbose,
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
                                              verbose=verbose)
-    pprint.pparint(config)
+    pprint.pprint(config)
     with self_contained_session(db_url=database) as session:
         query = "select * from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'"
         for index, match in enumerate(session.bind.execute(query).fetchall()):
