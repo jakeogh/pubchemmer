@@ -158,21 +158,7 @@ def dbimport(paths,
     if verbose:
         ic(config, config_mtime)
 
-    #if add:
-    #    section = "test_section"
-    #    key = "test_key"
-    #    value = "test_value"
-    #    config, config_mtime = click_write_config_entry(click_instance=click,
-    #                                                    app_name=APP_NAME,
-    #                                                    section=section,
-    #                                                    key=key,
-    #                                                    value=value,
-    #                                                    keep_case=False,
-    #                                                    verbose=verbose)
-    #    if verbose:
-    #        ic(config)
-
-    primary_key_created=False
+    primary_key_created = False
     with self_contained_session(db_url=database) as session:
         if verbose:
             ic(session)
@@ -203,7 +189,7 @@ def dbimport(paths,
                 if verbose:
                     ic(mdict)
 
-                mdict =  {k.lower(): v for k, v in mdict.items()}
+                mdict = {k.lower(): v for k, v in mdict.items()}
                 mdict_df = pandas.DataFrame(mdict, index=[0])
                 #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
                 mdict_df.to_sql('pubchem',
@@ -215,7 +201,7 @@ def dbimport(paths,
                 #  'PUBCHEM_COMPOUND_CID': PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
                 if not primary_key_created:
                     session.bind.execute('ALTER TABLE pubchem ADD PRIMARY KEY (`pubchem_compound_cid`);')
-
+                    primary_key_created = True
                 if debug:
                     if ipython:
                         import IPython; IPython.embed()
