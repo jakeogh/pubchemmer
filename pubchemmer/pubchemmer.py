@@ -250,6 +250,33 @@ def find(match,
             import IPython; IPython.embed()
 
 @cli.command()
+@click.argument('match', type=str)
+@click.option('--verbose', is_flag=True)
+@click.option('--debug', is_flag=True)
+@click.option('--ipython', is_flag=True)
+@click.option("--null", is_flag=True)
+def dumpconfig(match,
+               verbose,
+               debug,
+               ipython,
+               null):
+
+    global APP_NAME
+    database = 'postgres://postgres@localhost/' + APP_NAME
+
+    config, config_mtime = click_read_config(click_instance=click,
+                                             app_name=APP_NAME,
+                                             verbose=verbose)
+    pprint.pparint(config)
+    with self_contained_session(db_url=database) as session:
+        query = "select * from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'"
+        for index, match in enumerate(session.bind.execute(query).fetchall()):
+            ic(index, match)
+
+        if ipython:
+            import IPython; IPython.embed()
+
+@cli.command()
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
