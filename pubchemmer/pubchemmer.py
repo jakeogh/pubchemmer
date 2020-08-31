@@ -211,8 +211,10 @@ def dbimport(paths,
                                 if_exists='append',
                                 index=False)  # data frame index is always 0
                 ic(mdict['pubchem_iupac_name'])
+
+                #  'PUBCHEM_COMPOUND_CID': PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
                 if not primary_key_created:
-                    session.bind.execute('ALTER TABLE pubchem ADD PRIMARY KEY (`id`);')
+                    session.bind.execute('ALTER TABLE pubchem ADD PRIMARY KEY (`pubchem_compound_cid`);')
 
                 if debug:
                     if ipython:
