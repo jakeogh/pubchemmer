@@ -205,7 +205,10 @@ def dbimport(paths,
                 mdict =  {k.lower(): v for k, v in mdict.items()}
                 mdict_df = pandas.DataFrame(mdict, index=[0])
                 #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
-                mdict_df.to_sql('pubchem', con=session.bind, if_exists='append')
+                mdict_df.to_sql('pubchem',
+                                con=session.bind,
+                                if_exists='append',
+                                index=False)  # data frame index is always 0
                 ic(mdict['pubchem_iupac_name'])
 
                 if debug:
