@@ -191,6 +191,7 @@ def dbimport(paths,
 
                 mdict = {k.lower(): v for k, v in mdict.items()}
                 mdict_df = pandas.DataFrame(mdict, index=[0])
+                # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
                 #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
                 mdict_df.to_sql('pubchem',
                                 con=session.bind,
@@ -234,7 +235,7 @@ def find(match,
         ic(config, config_mtime)
 
     with self_contained_session(db_url=database) as session:
-        query = "SELECT * from pubchem WHERE pubchem.pubchem_iupac_name LIKE '%%{}%%'".format(match)
+        query = "SELECT * from pubchem WHERE pubchem.pubchem_iupac_name LIKE '%%{}%%' ORDER BY pubchem_exact_mass".format(match)
         for index, match in enumerate(session.bind.execute(query).fetchall()):
             ic(index, match)
 
