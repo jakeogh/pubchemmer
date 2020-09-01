@@ -29,7 +29,7 @@ from icecream import ic
 from kcl.configops import click_read_config
 from kcl.configops import click_write_config_entry
 from kcl.inputops import enumerate_input
-
+from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
 from sqlalchemy_utils.functions import create_database
 from kcl.sqlalchemy.self_contained_session import self_contained_session
 from kcl.sqlalchemy.delete_database import delete_database as really_delete_database
@@ -274,6 +274,20 @@ def dumpconfig(verbose,
 
         if ipython:
             import IPython; IPython.embed()
+
+@cli.command()
+@click.option('--verbose', is_flag=True)
+@click.option('--debug', is_flag=True)
+@click.option('--ipython', is_flag=True)
+@click.option("--null", is_flag=True)
+def generate_sqlalchey_model(verbose,
+                             debug,
+                             ipython,
+                             null):
+
+    pprint.pprint(SDF_FIELD_TYPES)
+    if ipython:
+        import IPython; IPython.embed()
 
 @cli.command()
 @click.option('--verbose', is_flag=True)
