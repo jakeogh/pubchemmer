@@ -239,8 +239,10 @@ def dbimport(paths,
 
                 pubchem_row = PubChem(**mdict)
                 #ic(pubchem_row)
+                cid = mdict['pubchem_compound_cid']
                 elapsed_time = max(int(time.time() - import_start_time), 1)
-                records_per_sec = int((mindex + 1) / elapsed_time)
+                #records_per_sec = int((mindex + 1) / elapsed_time)
+                records_per_sec = int( cid / elapsed_time)
                 seconds_eta = total_records / records_per_sec
                 hours_eta = seconds_eta / (60*60)
                 days_eta = round(hours_eta / 24, 3)
@@ -248,7 +250,8 @@ def dbimport(paths,
                 session.add(pubchem_row)
                 if mindex % 1000 == 0:
                     session.commit()
-                    ic(days_eta, records_per_sec, mindex, mdict['pubchem_iupac_name'])
+                    name = mdict['pubchem_iupac_name']
+                    ic(days_eta, records_per_sec, mindex, cid, name])
 
                 #mdict_df = pandas.DataFrame(mdict, index=[0])
                 ## https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
