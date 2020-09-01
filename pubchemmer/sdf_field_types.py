@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 SDF_FIELD_TYPES = {
-    'mol chiral flag':                  'Boolean',
+    'mol_chiral_flag':                  'Boolean',
     'pubchem_compound_cid':             'Integer',
     'pubchem_compound_canonicalized':   'Boolean',
     'pubchem_cactvs_complexity':        'Numeric',
@@ -36,7 +36,7 @@ SDF_FIELD_TYPES = {
     'pubchem_cactvs_tauto_count':       'Integer',
     'pubchem_coordinate_type':          'Text',
     'pubchem_bondannotations':          'Text',
-    'openbabel symmetry classes':       'Text',
+    'openbabel_symmetry_classes':       'Text',
     'pubchem_substance_id':             'Integer',
     'pubchem_substance_version':        '',
     'pubchem_ext_datasource_name':      '',

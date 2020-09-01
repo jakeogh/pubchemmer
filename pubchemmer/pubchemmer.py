@@ -305,6 +305,7 @@ def generate_sqlalchemy_model(verbose,
                               null):
     output_template = '''#!/usr/bin/env python3
 
+### AUTO GENERATED FILE ###
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
 from sqlalchemy import Text
