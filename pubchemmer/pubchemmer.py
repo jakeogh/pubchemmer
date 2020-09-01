@@ -24,6 +24,7 @@ import requests
 import re
 import pprint
 import pandas
+import hashlib
 import click
 from sqlalchemy.ext.declarative import declarative_base
 from pathlib import Path
@@ -45,6 +46,14 @@ from structure_data_file_sdf_parser.structure_data_file_sdf_parser import molecu
 ic.configureOutput(includeContext=True)
 
 APP_NAME = 'pubchemmer'
+
+
+def md5_hash_file(path, block_size=256*128*2):
+    md5 = hashlib.md5()
+    with open(path, 'rb') as f:
+        for chunk in iter(lambda: f.read(block_size), b''):
+            md5.update(chunk)
+    return md5.hexdigest()
 
 
 @click.group()
@@ -190,6 +199,11 @@ def dbimport(paths,
 
 
             import_start_time = time.time()  # per sdf.gz
+            md5_hash = md5_hash_file(path)
+            expected_md5 = Path(path.as_posix() + '.md5').read_text().split()[0]
+            ic(md5_hash)
+            ic(expected_md5)
+            assert md5_hash = expected_md5
             for mindex, mdict in enumerate(molecule_dict_generator(path=path,
                                                                    verbose=verbose)):
                 if count:
