@@ -299,6 +299,8 @@ class Pubchem(Base):
     pprint.pprint(SDF_FIELD_TYPES)
     for key, value in SDF_FIELD_TYPES.items():
         key = key.replace(' ', '_')
+        if 'symmetry' in key:
+            import IPython; IPython.embed()
 
         column_type = 'Text'
         if value:
