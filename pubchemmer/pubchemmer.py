@@ -168,7 +168,7 @@ def dbimport(paths,
         if verbose:
             ic(session)
 
-        Base.metadata.create_all(session.bind)
+        BASE.metadata.create_all(session.bind)
 
         if not paths:
             ic('waiting for input')
