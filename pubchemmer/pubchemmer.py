@@ -199,7 +199,9 @@ def dbimport(paths,
                 mdict = {k.replace(' ', '_'): v for k, v in mdict.items()}
 
                 pubchem_row = PubChem(**mdict)
-                ic(pubchem_row)
+                #ic(pubchem_row)
+                session.add(pubchem_row)
+                session.commit()
 
                 #mdict_df = pandas.DataFrame(mdict, index=[0])
                 ## https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
