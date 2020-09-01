@@ -241,7 +241,7 @@ def find(match,
     if not cid:
         query = "SELECT * from pubchem WHERE pubchem.pubchem_iupac_name LIKE '%%{}%%' ORDER BY pubchem_exact_mass".format(match)
     else:
-        query = "SELECT * from pubchem WHERE pubchem_compound_cid={}".format(match)
+        query = "SELECT * from pubchem WHERE pubchem_compound_cid = '{}'".format(match)
 
     with self_contained_session(db_url=database) as session:
         for index, match in enumerate(session.bind.execute(query).fetchall()):
