@@ -31,8 +31,9 @@ from kcl.configops import click_read_config
 from kcl.configops import click_write_config_entry
 from kcl.inputops import enumerate_input
 from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
+from kcl.sqlalchemy.model.BaseMixin import BASE
 
-Base = declarative_base()
+#Base = declarative_base()
 from pubchemmer.PubChem import PubChem
 
 from sqlalchemy_utils.functions import create_database
