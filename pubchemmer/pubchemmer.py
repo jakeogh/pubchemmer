@@ -194,6 +194,7 @@ def dbimport(paths,
                                            null=null,
                                            debug=debug,
                                            verbose=verbose):
+            path = Path(path)
             if verbose:
                 ic(index, path)
 
