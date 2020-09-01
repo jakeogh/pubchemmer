@@ -208,6 +208,8 @@ def dbimport(paths,
                             mdict[key] = int(mdict[key])
                         if key_type in ['Boolean']:
                             mdict[key] = bool(mdict[key])
+                    else:  # ''
+                         mdict[key] = None
 
 
                 pubchem_row = PubChem(**mdict)
