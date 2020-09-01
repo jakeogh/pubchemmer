@@ -227,7 +227,7 @@ def dbimport(paths,
                 days_eta = round(hours_eta / 24, 3)
 
                 session.add(pubchem_row)
-                if mindex % 100 == 0:
+                if mindex % 1000 == 0:
                     session.commit()
                     ic(days_eta, records_per_sec, mindex, mdict['pubchem_iupac_name'])
 
