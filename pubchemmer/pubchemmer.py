@@ -226,10 +226,10 @@ def dbimport(paths,
                 hours_eta = seconds_eta / (60*60)
                 days_eta = round(hours_eta / 24, 3)
 
-                ic(days_eta, records_per_sec, mindex, mdict['pubchem_iupac_name'])
                 session.add(pubchem_row)
                 if mindex % 100 == 0:
                     session.commit()
+                    ic(days_eta, records_per_sec, mindex, mdict['pubchem_iupac_name'])
 
                 #mdict_df = pandas.DataFrame(mdict, index=[0])
                 ## https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
