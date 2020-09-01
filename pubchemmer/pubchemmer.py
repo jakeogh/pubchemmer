@@ -30,6 +30,7 @@ from kcl.configops import click_read_config
 from kcl.configops import click_write_config_entry
 from kcl.inputops import enumerate_input
 from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
+#from pubchemmer.Pubchem import Pubchem
 from sqlalchemy_utils.functions import create_database
 from kcl.sqlalchemy.self_contained_session import self_contained_session
 from kcl.sqlalchemy.delete_database import delete_database as really_delete_database
@@ -299,8 +300,6 @@ class Pubchem(Base):
     pprint.pprint(SDF_FIELD_TYPES)
     for key, value in SDF_FIELD_TYPES.items():
         key = key.replace(' ', '_')
-        if 'symmetry' in key:
-            import IPython; IPython.embed()
 
         column_type = 'Text'
         if value:
