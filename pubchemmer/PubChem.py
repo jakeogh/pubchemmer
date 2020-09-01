@@ -7,10 +7,11 @@ from sqlalchemy import Integer
 from sqlalchemy import Boolean
 from sqlalchemy import Numeric
 
+from kcl.sqlalchemy.model.BaseMixin import BASE
 #Base = declarative_base()
 
 
-class PubChem(Base):
+class PubChem(BASE):
     __tablename__ = 'pubchem'
     mol_chiral_flag = Column(Boolean())
     pubchem_compound_cid = Column(Integer(), primary_key=True)
