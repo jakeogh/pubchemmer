@@ -152,6 +152,8 @@ def dbimport(paths,
              delete_database,
              null):
 
+    total_records = 155000000
+
     global APP_NAME
     database = 'postgres://postgres@localhost/' + APP_NAME
     if delete_database:
@@ -220,7 +222,11 @@ def dbimport(paths,
                 #ic(pubchem_row)
                 elapsed_time = max(int(time.time() - import_start_time), 1)
                 records_per_sec = int((mindex + 1) / elapsed_time)
-                ic(records_per_sec, mindex, mdict['pubchem_iupac_name'])
+                seconds_eta = total_records / records_per_sec
+                hours_eta = seconds_eta / (60*60)
+                days_eta = hours_eta / 24
+
+                ic(days_eta, records_per_sec, mindex, mdict['pubchem_iupac_name'])
                 session.add(pubchem_row)
                 session.commit()
 
