@@ -287,9 +287,13 @@ def generate_sqlalchemy_model(verbose,
     output_template = ''
     pprint.pprint(SDF_FIELD_TYPES)
     for key, value in SDF_FIELD_TYPES.items():
-        line = "Column('{column}', {column_type}(), table=<{table}>),\n".format(column=key,
-                                                                                column_type=value,
-                                                                                table='pubchem')
+        column_type = ''
+        if value:
+            column_type = value + '()'
+        #ic(key, value)
+        line = "Column('{column}', {column_type}, table=<{table}>),\n".format(column=key,
+                column_type=column_type,
+                                                                              table='pubchem')
         output_template += line
 
     print(output_template)
