@@ -298,6 +298,7 @@ class Pubchem(Base):
 '''
     pprint.pprint(SDF_FIELD_TYPES)
     for key, value in SDF_FIELD_TYPES.items():
+        key = key.replace(' ', '_')
 
         column_type = 'Text'
         if value:
