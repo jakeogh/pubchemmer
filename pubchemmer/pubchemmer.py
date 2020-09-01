@@ -297,14 +297,17 @@ class Pubchem(Base):
     __tablename__ = 'pubchem'
 '''
     pprint.pprint(SDF_FIELD_TYPES)
-    primary_key = ''
     for key, value in SDF_FIELD_TYPES.items():
+
         column_type = 'Text'
         if value:
             column_type = value
+
+        primary_key = ''
         if key == 'pubchem_compound_cid':
             primary_key = ', primary_key=True'
-        line = "    {column} = Column{column_type}(){primary_key}),\n".format(column=key,
+
+        line = "    {column} = Column({column_type}(){primary_key}),\n".format(column=key,
                                                                               primary_key=primary_key,
                                                                               column_type=column_type)
         output_template += line
