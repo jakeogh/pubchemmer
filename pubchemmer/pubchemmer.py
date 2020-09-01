@@ -88,6 +88,7 @@ def parse_pubchem_sdtags(content, verbose=False):
         if re.match(r"    [A-Z]", line):
             #print(line)
             new_key = line.strip()
+            new_key = new_key.replace(' ', '_')
             current_key = new_key
             sdf_keys_dict[new_key] = ''
             body = True
