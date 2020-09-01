@@ -297,7 +297,7 @@ from sqlalchemy import Integer
 class Pubchem(Base):
     __tablename__ = 'pubchem'
 '''
-    pprint.pprint(SDF_FIELD_TYPES)
+    #pprint.pprint(SDF_FIELD_TYPES)
     for key, value in SDF_FIELD_TYPES.items():
         key = key.replace(' ', '_')
 
