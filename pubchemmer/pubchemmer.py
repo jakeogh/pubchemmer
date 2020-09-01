@@ -200,10 +200,11 @@ def dbimport(paths,
                 for key in mdict.keys():
                     #assert key in SDF_FIELD_TYPES.keys()
                     key_type = SDF_FIELD_TYPES[key]
-                    if key_type in ['Integer', 'Boolean']:
-                        mdict[key] = int(mdict[key])
-                    if key_type in ['Boolean']:
-                        mdict[key] = bool(mdict[key])
+                    if mdict[key]:
+                        if key_type in ['Integer', 'Boolean']:
+                            mdict[key] = int(mdict[key])
+                        if key_type in ['Boolean']:
+                            mdict[key] = bool(mdict[key])
 
 
                 pubchem_row = PubChem(**mdict)
