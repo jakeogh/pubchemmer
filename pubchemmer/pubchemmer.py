@@ -198,24 +198,27 @@ def dbimport(paths,
                 mdict = {k.lower(): v for k, v in mdict.items()}
                 mdict = {k.replace(' ', '_'): v for k, v in mdict.items()}
 
-                mdict_df = pandas.DataFrame(mdict, index=[0])
-                # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
-                #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
-                mdict_df.to_sql('pubchem',
-                                con=session.bind,
-                                if_exists='append',
-                                index=False)  # data frame index is always 0
-                ic(mindex, mdict['pubchem_iupac_name'])
+                pubchem_row = PubChem(**mdict)
+                ic(pubchem_row)
 
-                #  'PUBCHEM_COMPOUND_CID':
-                #       PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
-                if not primary_key_created:
-                    session.bind.execute("ALTER TABLE pubchem ADD PRIMARY KEY (pubchem_compound_cid);")
-                    primary_key_created = True
-                if debug:
-                    if ipython:
-                        import IPython; IPython.embed()
-                        break
+                #mdict_df = pandas.DataFrame(mdict, index=[0])
+                ## https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
+                ##mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
+                #mdict_df.to_sql('pubchem',
+                #                con=session.bind,
+                #                if_exists='append',
+                #                index=False)  # data frame index is always 0
+                #ic(mindex, mdict['pubchem_iupac_name'])
+
+                ##  'PUBCHEM_COMPOUND_CID':
+                ##       PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
+                #if not primary_key_created:
+                #    session.bind.execute("ALTER TABLE pubchem ADD PRIMARY KEY (pubchem_compound_cid);")
+                #    primary_key_created = True
+                #if debug:
+                #    if ipython:
+                #        import IPython; IPython.embed()
+                #        break
 
             if ipython:
                 import IPython; IPython.embed()
