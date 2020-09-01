@@ -288,10 +288,12 @@ def generate_sqlalchemy_model(verbose,
     output_template = '''#!/usr/bin/env python3
 
 from sqlalchemy.ext.declarative import declarative_base
-Base = declarative_base()
 from sqlalchemy import Column
 from sqlalchemy import Text
 from sqlalchemy import Integer
+from sqlalchemy import Boolean
+
+Base = declarative_base()
 
 
 class Pubchem(Base):
