@@ -168,6 +168,7 @@ def dbimport(paths,
         all_sdf_keys = config['sdf_keys'].keys()
         assert "PUBCHEM_XLOGP3" in all_sdf_keys
 
+        mdict_df = pandas.DataFrame()
         for index, path in enumerate_input(iterator=paths,
                                            null=null,
                                            debug=debug,
@@ -190,6 +191,9 @@ def dbimport(paths,
                     ic(mdict)
 
                 mdict = {k.lower(): v for k, v in mdict.items()}
+                import IPython; IPython.embed()
+                continue
+
                 mdict_df = pandas.DataFrame(mdict, index=[0])
                 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
                 #mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
