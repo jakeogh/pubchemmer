@@ -179,7 +179,6 @@ def dbimport(paths,
         assert "PUBCHEM_XLOGP3" in all_sdf_keys
 
         mdict_df = pandas.DataFrame()
-        import_start_time = time.time()
         for index, path in enumerate_input(iterator=paths,
                                            null=null,
                                            debug=debug,
@@ -188,6 +187,7 @@ def dbimport(paths,
                 ic(index, path)
 
 
+            import_start_time = time.time()  # per sdf.gz
             for mindex, mdict in enumerate(molecule_dict_generator(path=path,
                                                                    verbose=verbose)):
                 if count:
@@ -219,8 +219,8 @@ def dbimport(paths,
                 pubchem_row = PubChem(**mdict)
                 #ic(pubchem_row)
                 elapsed_time = max(int(time.time() - import_start_time), 1)
-                records_per_sec = int((index + 1) / elapsed_time)
-                ic(records_per_sec, index, mdict['pubchem_iupac_name'])
+                records_per_sec = int((mindex + 1) / elapsed_time)
+                ic(records_per_sec, mindex, mdict['pubchem_iupac_name'])
                 session.add(pubchem_row)
                 session.commit()
 
