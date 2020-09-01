@@ -199,8 +199,7 @@ def dbimport(paths,
                                            verbose=verbose):
             path = Path(path)
 
-            if verbose or simulate:
-                ic(index, path)
+            ic(index, path)
             if simulate:
                 continue
 
