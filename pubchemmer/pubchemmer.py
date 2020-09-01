@@ -36,11 +36,7 @@ from kcl.sqlalchemy.self_contained_session import self_contained_session
 from kcl.sqlalchemy.delete_database import delete_database as really_delete_database
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import molecule_dict_generator
 
-
 ic.configureOutput(includeContext=True)
-# import IPython; IPython.embed()
-# import pdb; pdb.set_trace()
-# from pudb import set_trace; set_trace(paused=False)
 
 APP_NAME = 'pubchemmer'
 
