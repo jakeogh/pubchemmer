@@ -284,16 +284,29 @@ def generate_sqlalchemy_model(verbose,
                               debug,
                               ipython,
                               null):
-    output_template = ''
+    output_template = '''#!/usr/bin/env python3
+
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+from sqlalchemy import Column
+from sqlalchemy import Text
+from sqlalchemy import Integer
+
+
+class Pubchem(Base):
+    __tablename__ = 'pubchem'
+'''
     pprint.pprint(SDF_FIELD_TYPES)
+    primary_key = ''
     for key, value in SDF_FIELD_TYPES.items():
-        column_type = ''
+        column_type = 'Text'
         if value:
-            column_type = value + '()'
-        #ic(key, value)
-        line = "Column('{column}', {column_type}, table=<{table}>),\n".format(column=key,
-                column_type=column_type,
-                                                                              table='pubchem')
+            column_type = value
+        if key == 'pubchem_compound_cid':
+            primary_key = ', primary_key=True'
+        line = "    {column} = Column{column_type}(){primary_key}),\n".format(column=key,
+                                                                              primary_key=primary_key
+                                                                              column_type=column_type)
         output_template += line
 
     print(output_template)
