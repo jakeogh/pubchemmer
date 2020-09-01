@@ -168,7 +168,8 @@ def dbimport(paths,
     global APP_NAME
     database = 'postgres://postgres@localhost/' + APP_NAME
     if delete_database:
-        really_delete_database(database)
+        if not simulate:
+            really_delete_database(database)
 
 
     config, config_mtime = click_read_config(click_instance=click,
