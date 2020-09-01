@@ -224,7 +224,7 @@ def dbimport(paths,
                 records_per_sec = int((mindex + 1) / elapsed_time)
                 seconds_eta = total_records / records_per_sec
                 hours_eta = seconds_eta / (60*60)
-                days_eta = hours_eta / 24
+                days_eta = round(hours_eta / 24, 2)
 
                 ic(days_eta, records_per_sec, mindex, mdict['pubchem_iupac_name'])
                 session.add(pubchem_row)
