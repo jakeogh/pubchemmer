@@ -284,8 +284,14 @@ def generate_sqlalchemy_model(verbose,
                               debug,
                               ipython,
                               null):
-
+    output_template = ''
     pprint.pprint(SDF_FIELD_TYPES)
+    for key, value in SDF_FIELD_TYPES.items():
+        line = "Column('{column}', TEXT(), table=<{table}>),\n"
+        output_template += line
+
+    print(output_template)
+
     if ipython:
         import IPython; IPython.embed()
 
@@ -300,7 +306,9 @@ def dbquery(verbose,
             null):
 
     '''
-    session.bind.execute("select column_name, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'").fetchall()
+    session.bind.execute("select column_name,
+                          data_type,
+                          character_maximum_length from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'").fetchall()
     '''
 
     global APP_NAME
@@ -311,7 +319,6 @@ def dbquery(verbose,
                                              verbose=verbose)
     if verbose:
         ic(config, config_mtime)
-
 
     with self_contained_session(db_url=database) as session:
         if verbose:
