@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
 from sqlalchemy import Text
 from sqlalchemy import Integer
 from sqlalchemy import Boolean
 from sqlalchemy import Numeric
 
-Base = declarative_base()
+#Base = declarative_base()
 
 
 class PubChem(Base):
