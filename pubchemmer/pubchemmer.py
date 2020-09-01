@@ -305,7 +305,7 @@ class Pubchem(Base):
         if key == 'pubchem_compound_cid':
             primary_key = ', primary_key=True'
         line = "    {column} = Column{column_type}(){primary_key}),\n".format(column=key,
-                                                                              primary_key=primary_key
+                                                                              primary_key=primary_key,
                                                                               column_type=column_type)
         output_template += line
 
