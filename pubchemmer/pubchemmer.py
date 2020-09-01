@@ -292,6 +292,7 @@ from sqlalchemy import Column
 from sqlalchemy import Text
 from sqlalchemy import Integer
 from sqlalchemy import Boolean
+from sqlalchemy import Numeric
 
 Base = declarative_base()
 
