@@ -24,6 +24,7 @@ import re
 import pprint
 import pandas
 import click
+from sqlalchemy.ext.declarative import declarative_base
 from pathlib import Path
 from icecream import ic
 from kcl.configops import click_read_config
@@ -149,6 +150,8 @@ def dbimport(paths,
     if delete_database:
         really_delete_database(database)
 
+    Base = declarative_base()
+
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
                                              verbose=verbose)
@@ -159,6 +162,9 @@ def dbimport(paths,
     with self_contained_session(db_url=database) as session:
         if verbose:
             ic(session)
+
+        Base.metadata.create_all(session.bind)
+
         if not paths:
             ic('waiting for input')
 
