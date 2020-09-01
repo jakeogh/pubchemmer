@@ -205,7 +205,7 @@ def dbimport(paths,
             ic(md5_hash)
             ic(expected_md5)
             assert md5_hash == expected_md5
-            for mindex, mdict in enumerate(molecule_dict_generator(path=path,
+            for mindex, mdict in enumerate(molecule_dict_generator(path=path.as_posix(),
                                                                    verbose=verbose)):
                 if count:
                     if count > (mindex + 1):
