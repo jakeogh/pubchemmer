@@ -97,6 +97,7 @@ def parse_pubchem_sdtags(content, verbose=False):
             assert current_key
             sdf_keys_dict[current_key] += line
 
+    #assert 'mol_chiral_flag' in sdf_keys_dict.keys()
     return sdf_keys_dict
 
 
@@ -195,6 +196,7 @@ def dbimport(paths,
                     ic(mdict)
 
                 mdict = {k.lower(): v for k, v in mdict.items()}
+                mdict = {k.replace(' ', '_'): v for k, v in mdict.items()}
 
                 mdict_df = pandas.DataFrame(mdict, index=[0])
                 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
