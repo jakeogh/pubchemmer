@@ -228,7 +228,7 @@ def dbimport(paths,
 
                 ic(days_eta, records_per_sec, mindex, mdict['pubchem_iupac_name'])
                 session.add(pubchem_row)
-                if mindex % 10 == 0:
+                if mindex % 100 == 0:
                     session.commit()
 
                 #mdict_df = pandas.DataFrame(mdict, index=[0])
