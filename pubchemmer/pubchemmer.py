@@ -168,6 +168,7 @@ def dbimport(paths,
         if verbose:
             ic(session)
 
+        ic(BASE)
         BASE.metadata.create_all(session.bind)
 
         if not paths:
