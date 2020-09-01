@@ -289,7 +289,7 @@ def generate_sqlalchemy_model(verbose,
     for key, value in SDF_FIELD_TYPES.items():
         line = "Column('{column}', {column_type}(), table=<{table}>),\n".format(column=key,
                                                                                 column_type=value,
-                                                                                tble='pubchem')
+                                                                                table='pubchem')
         output_template += line
 
     print(output_template)
