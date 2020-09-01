@@ -19,6 +19,7 @@
 
 import os
 import sys
+import time
 import requests
 import re
 import pprint
@@ -178,12 +179,14 @@ def dbimport(paths,
         assert "PUBCHEM_XLOGP3" in all_sdf_keys
 
         mdict_df = pandas.DataFrame()
+        import_start_time = time.time()
         for index, path in enumerate_input(iterator=paths,
                                            null=null,
                                            debug=debug,
                                            verbose=verbose):
             if verbose:
                 ic(index, path)
+
 
             for mindex, mdict in enumerate(molecule_dict_generator(path=path,
                                                                    verbose=verbose)):
@@ -215,6 +218,9 @@ def dbimport(paths,
 
                 pubchem_row = PubChem(**mdict)
                 #ic(pubchem_row)
+                elapsed_time = max(int(time.time() - import_start_time), 1)
+                records_per_sec = int((index + 1) / elapsed_time)
+                ic(records_per_sec, index, mdict['pubchem_iupac_name'])
                 session.add(pubchem_row)
                 session.commit()
 
@@ -225,7 +231,6 @@ def dbimport(paths,
                 #                con=session.bind,
                 #                if_exists='append',
                 #                index=False)  # data frame index is always 0
-                #ic(mindex, mdict['pubchem_iupac_name'])
 
                 ##  'PUBCHEM_COMPOUND_CID':
                 ##       PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
