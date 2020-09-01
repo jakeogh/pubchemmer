@@ -251,7 +251,7 @@ def dbimport(paths,
                 if mindex % 1000 == 0:
                     session.commit()
                     name = mdict['pubchem_iupac_name']
-                    ic(days_eta, records_per_sec, mindex, cid, name])
+                    ic(days_eta, records_per_sec, mindex, cid, name)
 
                 #mdict_df = pandas.DataFrame(mdict, index=[0])
                 ## https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
