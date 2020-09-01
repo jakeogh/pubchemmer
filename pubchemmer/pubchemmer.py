@@ -149,6 +149,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
+@click.option('--simulate', is_flag=True)
 @click.option('--count', type=str)
 @click.option('--delete-database', is_flag=True)
 @click.option("--null", is_flag=True)
@@ -157,6 +158,7 @@ def dbimport(paths,
              verbose,
              debug,
              ipython,
+             simulate,
              count,
              delete_database,
              null):
@@ -195,9 +197,11 @@ def dbimport(paths,
                                            debug=debug,
                                            verbose=verbose):
             path = Path(path)
-            if verbose:
-                ic(index, path)
 
+            if verbose or simulate:
+                ic(index, path)
+            if simulate:
+                continue
 
             import_start_time = time.time()  # per sdf.gz
             md5_hash = md5_hash_file(path)
