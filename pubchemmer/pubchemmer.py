@@ -218,7 +218,7 @@ def dbimport(paths,
 @cli.command()
 @click.argument('match', type=str)
 @click.option('--verbose', is_flag=True)
-@click.option('--cid', type=str)
+@click.option('--cid', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
 @click.option("--null", is_flag=True)
@@ -241,7 +241,7 @@ def find(match,
     if not cid:
         query = "SELECT * from pubchem WHERE pubchem.pubchem_iupac_name LIKE '%%{}%%' ORDER BY pubchem_exact_mass".format(match)
     else:
-        query = "SELECT * from pubchem WHERE pubchem_compound_cid={}".format(cid)
+        query = "SELECT * from pubchem WHERE pubchem_compound_cid={}".format(match)
 
     with self_contained_session(db_url=database) as session:
         for index, match in enumerate(session.bind.execute(query).fetchall()):
