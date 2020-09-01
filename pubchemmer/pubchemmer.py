@@ -203,7 +203,7 @@ def dbimport(paths,
             expected_md5 = Path(path.as_posix() + '.md5').read_text().split()[0]
             ic(md5_hash)
             ic(expected_md5)
-            assert md5_hash = expected_md5
+            assert md5_hash == expected_md5
             for mindex, mdict in enumerate(molecule_dict_generator(path=path,
                                                                    verbose=verbose)):
                 if count:
@@ -229,7 +229,7 @@ def dbimport(paths,
                         if key_type in ['Boolean']:
                             mdict[key] = bool(mdict[key])
                     else:  # ''
-                         mdict[key] = None
+                        mdict[key] = None
 
 
                 pubchem_row = PubChem(**mdict)
