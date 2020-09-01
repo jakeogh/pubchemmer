@@ -280,10 +280,10 @@ def dumpconfig(verbose,
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
 @click.option("--null", is_flag=True)
-def generate_sqlalchey_model(verbose,
-                             debug,
-                             ipython,
-                             null):
+def generate_sqlalchemy_model(verbose,
+                              debug,
+                              ipython,
+                              null):
 
     pprint.pprint(SDF_FIELD_TYPES)
     if ipython:
