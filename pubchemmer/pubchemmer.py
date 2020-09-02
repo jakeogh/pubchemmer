@@ -278,7 +278,7 @@ def dbimport(paths,
                 break
 
 @cli.command()
-@click.argument('match', type=str)
+@click.argument('match', type=str, nargs=1)
 @click.option('--verbose', is_flag=True)
 @click.option('--cid', is_flag=True)
 @click.option('--debug', is_flag=True)
@@ -290,6 +290,8 @@ def find(match,
          debug,
          ipython,
          null):
+
+    assert match
 
     global APP_NAME
     database = 'postgres://postgres@localhost/' + APP_NAME
