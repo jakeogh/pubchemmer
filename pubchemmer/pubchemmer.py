@@ -241,10 +241,8 @@ def dbimport(paths,
                 #ic(pubchem_row)
                 cid = mdict['pubchem_compound_cid']
                 elapsed_time = max(int(time.time() - import_start_time), 1)
-                records_per_sec = int((mindex + 1) / elapsed_time)
+                records_per_sec = max(int((mindex + 1) / elapsed_time), 1)
                 records_remaning = total_records - cid
-                #records_per_sec = int( cid / elapsed_time)
-                #seconds_eta = total_records / records_per_sec
                 seconds_eta = records_remaning / records_per_sec
                 hours_eta = seconds_eta / (60*60)
                 days_eta = round(hours_eta / 24, 3)
@@ -277,19 +275,45 @@ def dbimport(paths,
                 import IPython; IPython.embed()
                 break
 
+
+@cli.command()
+@click.option('--verbose', is_flag=True)
+@click.option('--debug', is_flag=True)
+@click.option('--ipython', is_flag=True)
+def last_cid(verbose,
+             debug,
+             ipython):
+
+    global APP_NAME
+    database = 'postgres://postgres@localhost/' + APP_NAME
+
+    config, config_mtime = click_read_config(click_instance=click,
+                                             app_name=APP_NAME,
+                                             verbose=verbose)
+    if verbose:
+        ic(config, config_mtime)
+
+    query = "SELECT pubchem_compound_id from pubchem ORDER BY pubchem_compound_id"
+
+    with self_contained_session(db_url=database) as session:
+        for index, match in enumerate(session.bind.execute(query).fetchone()):
+            ic(index, match)
+
+        if ipython:
+            import IPython; IPython.embed()
+
+
 @cli.command()
 @click.argument('match', type=str, nargs=1)
 @click.option('--verbose', is_flag=True)
 @click.option('--cid', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
-@click.option("--null", is_flag=True)
 def find(match,
          verbose,
          cid,
          debug,
-         ipython,
-         null):
+         ipython):
 
     assert match
 
