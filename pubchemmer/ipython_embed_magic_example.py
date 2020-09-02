@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# mostly by #python@aghast
+
 import os
 import sys
 import click
