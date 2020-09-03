@@ -200,11 +200,11 @@ def dbimport(paths,
                                            debug=debug,
                                            verbose=verbose):
             path = Path(path)
-            last_cid_in_file = int(path.name.as_posix().split("_")[-1].split('.')[0])
+            last_cid_in_file = int(path.name.split("_")[-1].split('.')[0])
             ic(last_cid_in_file)
             if start_cid:
                 if last_cid_in_file < start_cid:
-                    eprint("skipping:", path)
+                    ic('skipping:', path)
                     continue
 
             ic(index, path)
