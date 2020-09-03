@@ -150,7 +150,8 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
 @click.option('--simulate', is_flag=True)
-@click.option('--count', type=str)
+@click.option('--count', type=int)
+@click.option('--start-cid', type=int)
 @click.option('--delete-database', is_flag=True)
 @click.option("--null", is_flag=True)
 def dbimport(paths,
@@ -160,6 +161,7 @@ def dbimport(paths,
              ipython,
              simulate,
              count,
+             start_cid,
              delete_database,
              null):
 
@@ -211,6 +213,10 @@ def dbimport(paths,
             assert md5_hash == expected_md5
             for mindex, mdict in enumerate(molecule_dict_generator(path=path.as_posix(),
                                                                    verbose=verbose)):
+                if start_cid:
+                    if int(mdict['PUBCHEM_COMPOUND_CID']) < start_cid:
+                        continue
+
                 if count:
                     if count > (mindex + 1):
                         ic(count)
@@ -252,24 +258,6 @@ def dbimport(paths,
                     session.commit()
                     name = mdict['pubchem_iupac_name']
                     ic(days_eta, records_per_sec, records_remaning, mindex, cid, name)
-
-                #mdict_df = pandas.DataFrame(mdict, index=[0])
-                ## https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html?highlight=to_sql
-                ##mdict_df.to_sql('pubchem', con=session.bind, if_exists='append', index_label='PUBCHEM_COMPOUND_CID')
-                #mdict_df.to_sql('pubchem',
-                #                con=session.bind,
-                #                if_exists='append',
-                #                index=False)  # data frame index is always 0
-
-                ##  'PUBCHEM_COMPOUND_CID':
-                ##       PubChem Compound ID (CID) is the non-zero unsigned integer PubChem accession ID for a unique chemical structure.
-                #if not primary_key_created:
-                #    session.bind.execute("ALTER TABLE pubchem ADD PRIMARY KEY (pubchem_compound_cid);")
-                #    primary_key_created = True
-                #if debug:
-                #    if ipython:
-                #        import IPython; IPython.embed()
-                #        break
 
             if ipython:
                 import IPython; IPython.embed()
