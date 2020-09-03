@@ -293,7 +293,8 @@ def last_cid(verbose,
     if verbose:
         ic(config, config_mtime)
 
-    query = "SELECT pubchem.pubchem_compound_cid from pubchem ORDER BY pubchem.pubchem_compound_cid"
+    #query = "SELECT pubchem.pubchem_compound_cid from pubchem ORDER BY pubchem.pubchem_compound_cid"
+    query = "SELECT MAX(pubchem.pubchem_compound_cid) from pubchem"
 
     with self_contained_session(db_url=database) as session:
         for index, match in enumerate(session.bind.execute(query).fetchone()):
