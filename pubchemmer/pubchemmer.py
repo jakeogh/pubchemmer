@@ -318,6 +318,7 @@ def describe(verbose,
     #query = "SELECT pubchem.pubchem_compound_cid from pubchem ORDER BY pubchem.pubchem_compound_cid"
     query = "select column_name, data_type, character_maximum_length, column_default, is_nullable from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem';"
 
+    ic('column_name, data_type, character_maximum_length, column_default, is_nullable')
     with self_contained_session(db_url=database) as session:
         for index, match in enumerate(session.bind.execute(query).fetchall()):
             ic(index, match)
