@@ -315,7 +315,7 @@ def indexes(verbose,
         ic(config, config_mtime)
 
     #query = "SELECT pubchem.pubchem_compound_cid from pubchem ORDER BY pubchem.pubchem_compound_cid"
-    query = "SHOW INDEX FROM pubchem;"
+    query = "SELECT * FROM pg_indexes WHERE tablename = 'pubchem';"
 
     #ic('column_name, data_type, character_maximum_length, column_default, is_nullable')
     with self_contained_session(db_url=database) as session:
