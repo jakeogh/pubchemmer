@@ -1,6 +1,5 @@
 ```
-
-$ pubchemmer
+$ pubchemmer --help
 Usage: pubchemmer [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -9,10 +8,14 @@ Options:
 Commands:
   dbimport
   dbquery                       session.bind.execute("select column_name,...
+  describe
   dumpconfig
   find
   generate-sqlalchemy-model
+  indexes
+  last-cid
   update-sdf-tags-from-pubchem
+
 
 $ pubchemmer dbimport ~/pubchem/new/ftp.ncbi.nlm.nih.gov/pubchem/Compound/CURRENT-Full/SDF/* --simulate |& head -n 5
 ic| pubchemmer.py:186 in dbimport()- BASE: <class 'sqlalchemy.ext.declarative.api.Base'>
