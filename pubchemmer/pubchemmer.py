@@ -27,15 +27,15 @@ from pathlib import Path
 import click
 import pandas
 import requests
+from enumerate_input import enumerate_input
 from icecream import ic
 from kcl.configops import click_read_config, click_write_config_entry
-from kcl.iterops import enumerate_input
 from kcl.sqlalchemy.delete_database import \
     delete_database as really_delete_database
 from kcl.sqlalchemy.model.BaseMixin import BASE
 from kcl.sqlalchemy.self_contained_session import self_contained_session
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy_utils.functions import create_database
+#from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy_utils.functions import create_database
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
     molecule_dict_generator
 
