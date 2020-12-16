@@ -15,40 +15,39 @@
 # pylint: disable=R0903     # too few public methods
 # pylint: disable=E1101     # no member for base
 # pylint: disable=W0201     # attribute defined outside __init__
-## pylint: disable=W0703     # catching too general exception
 
+import hashlib
 import os
+import pprint
+import re
 import sys
 import time
-import requests
-import re
-import pprint
-import pandas
-import hashlib
-import click
-from sqlalchemy.ext.declarative import declarative_base
 from pathlib import Path
+
+import click
+import pandas
+import requests
 from icecream import ic
-from kcl.configops import click_read_config
-from kcl.configops import click_write_config_entry
-from kcl.inputops import enumerate_input
-from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
+from kcl.configops import click_read_config, click_write_config_entry
+from kcl.iterops import enumerate_input
+from kcl.sqlalchemy.delete_database import \
+    delete_database as really_delete_database
 from kcl.sqlalchemy.model.BaseMixin import BASE
-
-#Base = declarative_base()
-from pubchemmer.PubChem import PubChem
-
-from sqlalchemy_utils.functions import create_database
 from kcl.sqlalchemy.self_contained_session import self_contained_session
-from kcl.sqlalchemy.delete_database import delete_database as really_delete_database
-from structure_data_file_sdf_parser.structure_data_file_sdf_parser import molecule_dict_generator
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy_utils.functions import create_database
+from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
+    molecule_dict_generator
+
+from pubchemmer.PubChem import PubChem
+from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
 
 ic.configureOutput(includeContext=True)
 
 APP_NAME = 'pubchemmer'
 
 
-def md5_hash_file(path, block_size=256*128*2):
+def md5_hash_file(path, block_size=256 * 128 * 2):
     md5 = hashlib.md5()
     with open(path, 'rb') as f:
         for chunk in iter(lambda: f.read(block_size), b''):
@@ -71,7 +70,7 @@ def parse_pubchem_sdtags(content, verbose=False):
     preamble = True
     body = False
     changelog = False
-    sdf_format_dict = {"preamble":'', "body":'', "changelog":''}
+    sdf_format_dict = {"preamble": '', "body": '', "changelog": ''}
     sdf_keys_dict = {}
     for line in content.splitlines():
         line = line + '\r\n'
