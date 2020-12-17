@@ -324,7 +324,7 @@ def indexes(verbose,
         if ipython:
             import IPython; IPython.embed()
 
-@cli.command()
+@cli.command("list database table columns")
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
