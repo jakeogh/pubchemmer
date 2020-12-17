@@ -34,8 +34,6 @@ from kcl.sqlalchemy.delete_database import \
     delete_database as really_delete_database
 from kcl.sqlalchemy.model.BaseMixin import BASE
 from kcl.sqlalchemy.self_contained_session import self_contained_session
-#from sqlalchemy.ext.declarative import declarative_base
-#from sqlalchemy_utils.functions import create_database
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
     molecule_dict_generator
 
@@ -142,7 +140,7 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
                                                         keep_case=True,
                                                         verbose=verbose)
 
-@cli.command()
+@cli.command(help="import pubchem sdf files")
 @click.argument("paths", type=str, nargs=-1)
 @click.option('--add', is_flag=True)
 @click.option('--verbose', is_flag=True)
@@ -247,7 +245,6 @@ def dbimport(paths,
                     else:  # ''
                         mdict[key] = None
 
-
                 pubchem_row = PubChem(**mdict)
                 #ic(pubchem_row)
                 cid = mdict['pubchem_compound_cid']
@@ -269,7 +266,7 @@ def dbimport(paths,
                 break
 
 
-@cli.command()
+@cli.command(help="get last compound id (pubchem CID) in database")
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
@@ -296,7 +293,7 @@ def last_cid(verbose,
         if ipython:
             import IPython; IPython.embed()
 
-@cli.command()
+@cli.command(help="list table indexes")
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
@@ -324,7 +321,7 @@ def indexes(verbose,
         if ipython:
             import IPython; IPython.embed()
 
-@cli.command("list database table columns")
+@cli.command(help="list database table columns")
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
@@ -353,7 +350,7 @@ def describe(verbose,
             import IPython; IPython.embed()
 
 
-@cli.command()
+@cli.command(help="search for compound")
 @click.argument('match', type=str, nargs=1)
 @click.option('--verbose', is_flag=True)
 @click.option('--cid', is_flag=True)
