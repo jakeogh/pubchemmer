@@ -29,7 +29,8 @@ import pandas
 import requests
 from enumerate_input import enumerate_input
 from icecream import ic
-from kcl.configops import click_read_config, click_write_config_entry
+from kcl.configops import click_read_config
+from kcl.configops import click_write_config_entry
 from kcl.sqlalchemy.delete_database import \
     delete_database as really_delete_database
 from kcl.sqlalchemy.model.BaseMixin import BASE
@@ -104,7 +105,7 @@ def parse_pubchem_sdtags(content, verbose=False):
             sdf_keys_dict[new_key] = ''
             body = True
             continue
-        if body == True:
+        if body:
             assert current_key
             sdf_keys_dict[current_key] += line
 
@@ -114,8 +115,11 @@ def parse_pubchem_sdtags(content, verbose=False):
 
 @cli.command()
 @click.option('--verbose', is_flag=True)
+@click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
-def update_sdf_tags_from_pubchem(verbose, ipython):
+def update_sdf_tags_from_pubchem(verbose: bool,
+                                 debug: bool,
+                                 ipython: bool,):
     global APP_NAME
 
     url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
@@ -138,7 +142,8 @@ def update_sdf_tags_from_pubchem(verbose, ipython):
                                                         key=key,
                                                         value=sdf_keys_dict[key],
                                                         keep_case=True,
-                                                        verbose=verbose)
+                                                        verbose=verbose,
+                                                        debug=debug,)
 
 @cli.command(help="import pubchem sdf files")
 @click.argument("paths", type=str, nargs=-1)
@@ -173,11 +178,12 @@ def dbimport(paths,
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
-                                             verbose=verbose)
+                                             verbose=verbose,
+                                             debug=debug,)
     if verbose:
         ic(config, config_mtime)
 
-    primary_key_created = False
+    #primary_key_created = False
     with self_contained_session(db_url=database) as session:
         if verbose:
             ic(session)
@@ -191,10 +197,13 @@ def dbimport(paths,
         all_sdf_keys = config['sdf_keys'].keys()
         assert "PUBCHEM_XLOGP3" in all_sdf_keys
 
-        mdict_df = pandas.DataFrame()
+        #mdict_df = pandas.DataFrame()
         for index, path in enumerate_input(iterator=paths,
                                            null=null,
                                            debug=debug,
+                                           skip=None,
+                                           head=None,
+                                           tail=None,
                                            verbose=verbose):
             path = Path(path)
             last_cid_in_file = int(path.name.split("_")[-1].split('.')[0])
@@ -279,7 +288,8 @@ def last_cid(verbose,
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
-                                             verbose=verbose)
+                                             verbose=verbose,
+                                             debug=debug,)
     if verbose:
         ic(config, config_mtime)
 
@@ -306,7 +316,8 @@ def indexes(verbose,
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
-                                             verbose=verbose)
+                                             verbose=verbose,
+                                             debug=debug,)
     if verbose:
         ic(config, config_mtime)
 
@@ -334,7 +345,8 @@ def describe(verbose,
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
-                                             verbose=verbose)
+                                             verbose=verbose,
+                                             debug=debug,)
     if verbose:
         ic(config, config_mtime)
 
@@ -369,7 +381,8 @@ def find(match,
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
-                                             verbose=verbose)
+                                             verbose=verbose,
+                                             debug=debug,)
     if verbose:
         ic(config, config_mtime)
 
@@ -400,7 +413,8 @@ def dumpconfig(verbose,
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
-                                             verbose=verbose)
+                                             verbose=verbose,
+                                             debug=debug,)
     pprint.pprint(config)
     with self_contained_session(db_url=database) as session:
         query = "select * from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'"
@@ -478,7 +492,8 @@ def dbquery(verbose,
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
-                                             verbose=verbose)
+                                             verbose=verbose,
+                                             debug=debug,)
     if verbose:
         ic(config, config_mtime)
 
