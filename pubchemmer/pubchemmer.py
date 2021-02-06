@@ -394,11 +394,15 @@ def humanize_result_dict(result_dict):
             #    continue
         if k == 'pubchem_exact_mass':
             v = str(v)
+        if k == 'pubchem_coordinate_type':
+            if v == '1\n5\n255':
+                continue
         k = k.replace('pubchem_', '')
         k = k.replace('compound_cid', 'cid')
         k = k.replace('molecular_formula', 'formula')
-        k = k.replace('openeye_iso_smiles', 'iso_smiles')
+        k = k.replace('openeye_iso_smiles', 'smiles')
         k = k.replace('iupac_inchi', 'inchi')
+        k = k.replace('exact_mass', 'mass')
         humanized_result_dict[k] = v
 
     return humanized_result_dict
