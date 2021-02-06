@@ -369,10 +369,13 @@ def humanize_result_dict(result_dict):
     anchored_count = result_dict['pubchem_component_count']
     smiles_anchor = result_dict['pubchem_openeye_iso_smiles']
     for k, v in result_dict.items():
-        if k in ['pubchem_cactvs_subskeys', 'pubchem_iupac_inchikey']:
-            continue
         if not v:
             continue
+        if k in ['pubchem_cactvs_subskeys', 'pubchem_iupac_inchikey', 'cactvs_tauto_count']:
+            continue
+        if k == 'pubchem_compound_canonicalized':
+            if not v:
+                continue
         if '_name' in k and (k != 'pubchem_iupac_name'):
             if v == anchored_name:
                 continue
@@ -385,6 +388,8 @@ def humanize_result_dict(result_dict):
         if k == 'pubchem_openeye_can_smiles':
             if v == smiles_anchor:
                 continue
+        if k == 'pubchem_exact_mass':
+            v = str(v)
         k = k.replace('pubchem_', '')
         humanized_result_dict[k] = v
 
