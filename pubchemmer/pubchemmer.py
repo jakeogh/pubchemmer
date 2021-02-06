@@ -367,7 +367,7 @@ def humanize_result_dict(result_dict):
     anchored_name = result_dict['pubchem_iupac_name']
     anchored_mass = result_dict['pubchem_exact_mass']
     anchored_count = result_dict['pubchem_component_count']
-    smiles_anchor = result_dict['pubchem_openeye_iso_smiles']
+    #smiles_anchor = result_dict['pubchem_openeye_iso_smiles']
     for k, v in result_dict.items():
         if not v:
             continue
@@ -377,7 +377,7 @@ def humanize_result_dict(result_dict):
             if v:
                 continue
         if k == 'openbabel_symmetry_classes':
-            if v == 1:
+            if v == '1':
                 continue
         if '_name' in k and (k != 'pubchem_iupac_name'):
             if v == anchored_name:
@@ -389,11 +389,14 @@ def humanize_result_dict(result_dict):
             if v == anchored_count:
                 continue
         if k == 'pubchem_openeye_can_smiles':
-            if v == smiles_anchor:
-                continue
+            continue  # it's seemingly never more useful than the ISO smiles
+            #if v == smiles_anchor:
+            #    continue
         if k == 'pubchem_exact_mass':
             v = str(v)
         k = k.replace('pubchem_', '')
+        k = k.replace('compound_cid', 'cid')
+        k = k.replace('molecular_formula', 'formula')
         humanized_result_dict[k] = v
 
     return humanized_result_dict
