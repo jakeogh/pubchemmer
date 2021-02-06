@@ -407,6 +407,8 @@ def humanize_result_dict(result_dict):
         k = k.replace('cactvs_hbond', 'hbond')
         k = k.replace('cactvs_tpsa', 'tpsa')
         k = k.replace('openbabel_symmetry_classes', 'symmetry_classes')
+        k = k.replace('total_charge', 'charge')
+        k = k.replace('heavy_atom_count', 'heavy_atoms')
         if isinstance(v, Decimal):
             v = str(v)
         humanized_result_dict[k] = v
