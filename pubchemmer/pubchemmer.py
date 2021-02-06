@@ -371,10 +371,13 @@ def humanize_result_dict(result_dict):
     for k, v in result_dict.items():
         if not v:
             continue
-        if k in ['pubchem_cactvs_subskeys', 'pubchem_iupac_inchikey', 'cactvs_tauto_count']:
+        if k in ['pubchem_cactvs_subskeys', 'pubchem_iupac_inchikey', 'pubchem_cactvs_tauto_count']:
             continue
         if k == 'pubchem_compound_canonicalized':
-            if not v:
+            if v:
+                continue
+        if k == 'openbabel_symmetry_classes':
+            if v == 1:
                 continue
         if '_name' in k and (k != 'pubchem_iupac_name'):
             if v == anchored_name:
