@@ -379,7 +379,7 @@ def humanize_result_dict(result_dict):
         if k.endswith('_weight'):
             if str(anchored_mass).startswith(str(v)):
                 continue
-        if k.nedswith('_count'):
+        if k.endswith('_count'):
             if v == anchored_count:
                 continue
         if k == 'pubchem_openeye_can_smiles':
