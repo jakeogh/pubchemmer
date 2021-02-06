@@ -366,8 +366,10 @@ def humanize_result_dict(result_dict):
     humanized_result_dict = {}
     anchored_name = result_dict['pubchem_iupac_name']
     anchored_mass = result_dict['pubchem_exact_mass']
+    anchored_count = result_dict['pubchem_component_count']
+    smiles_anchor = result_dict['pubchem_openeye_iso_smiles']
     for k, v in result_dict.items():
-        if k in ['cactvs_subskeys', 'pubchem_iupac_inchikey']:
+        if k in ['pubchem_cactvs_subskeys', 'pubchem_iupac_inchikey']:
             continue
         if not v:
             continue
@@ -376,6 +378,12 @@ def humanize_result_dict(result_dict):
                 continue
         if k.endswith('_weight'):
             if str(anchored_mass).startswith(str(v)):
+                continue
+        if k.nedswith('_count'):
+            if v == anchored_count:
+                continue
+        if k == 'pubchem_openeye_can_smiles':
+            if v == smiles_anchor:
                 continue
         k = k.replace('pubchem_', '')
         humanized_result_dict[k] = v
