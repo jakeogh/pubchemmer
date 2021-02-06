@@ -362,7 +362,7 @@ def describe(verbose,
             import IPython; IPython.embed()
 
 
-@cli.command(help="search for compound")
+@cli.command(help="search for compound in pubchem_iupac_name column")
 @click.argument('match', type=str, nargs=1)
 @click.option('--verbose', is_flag=True)
 @click.option('--cid', is_flag=True)
@@ -387,7 +387,7 @@ def find(match,
         ic(config, config_mtime)
 
     if not cid:
-        query = "SELECT * from pubchem WHERE pubchem.pubchem_iupac_name LIKE '%%{}%%' ORDER BY pubchem_exact_mass".format(match)
+        query = "SELECT * from pubchem WHERE pubchem.pubchem_iupac_name LIKE '%%{}%%' ORDER BY pubchem_exact_mass DESC".format(match)
     else:
         query = "SELECT * from pubchem WHERE pubchem_compound_cid = '{}'".format(match)
 
