@@ -395,7 +395,8 @@ def find(match,
         result = session.bind.execute(query)
         result_keys = result.keys()
         for index, match in enumerate(result.fetchall()):
-            result_list = [a for a in zip(result_keys, match) if a[-1]]
+            result_zip = zip(result_keys, match)
+            result_list = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
             ic(index, result_list)
 
         #ic(result_keys)
