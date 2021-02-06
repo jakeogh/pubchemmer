@@ -397,6 +397,8 @@ def humanize_result_dict(result_dict):
         k = k.replace('pubchem_', '')
         k = k.replace('compound_cid', 'cid')
         k = k.replace('molecular_formula', 'formula')
+        k = k.replace('openeye_iso_smiles', 'iso_smiles')
+        k = k.replace('iupac_inchi', 'inchi')
         humanized_result_dict[k] = v
 
     return humanized_result_dict
