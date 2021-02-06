@@ -22,6 +22,7 @@ import pprint
 import re
 import sys
 import time
+from decimal import Decimal
 from pathlib import Path
 
 import click
@@ -371,7 +372,7 @@ def humanize_result_dict(result_dict):
     for k, v in result_dict.items():
         if not v:
             continue
-        if k in ['pubchem_cactvs_subskeys', 'pubchem_iupac_inchikey', 'pubchem_cactvs_tauto_count']:
+        if k in ['pubchem_cactvs_subskeys', 'pubchem_iupac_inchikey', 'pubchem_cactvs_tauto_count', 'pubchem_molecular_weight']:
             continue
         if k == 'pubchem_compound_canonicalized':
             if v:
@@ -403,6 +404,8 @@ def humanize_result_dict(result_dict):
         k = k.replace('openeye_iso_smiles', 'smiles')
         k = k.replace('iupac_inchi', 'inchi')
         k = k.replace('exact_mass', 'mass')
+        if isinstance(v, Decimal):
+            v = str(v)
         humanized_result_dict[k] = v
 
     return humanized_result_dict
