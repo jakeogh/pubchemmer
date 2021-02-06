@@ -395,9 +395,10 @@ def find(match,
         result = session.bind.execute(query)
         result_keys = result.keys()
         for index, match in enumerate(result.fetchall()):
-            ic(index, match)
+            result_list = [a for a in zip(result_keys, match) if a[-1]]
+            ic(index, result_list)
 
-        ic(result_keys)
+        #ic(result_keys)
 
         if ipython:
             import IPython; IPython.embed()
