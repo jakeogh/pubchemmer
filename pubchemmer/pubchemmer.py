@@ -404,6 +404,7 @@ def humanize_result_dict(result_dict):
         k = k.replace('openeye_iso_smiles', 'smiles')
         k = k.replace('iupac_inchi', 'inchi')
         k = k.replace('exact_mass', 'mass')
+        k = k.replace('cactvs_hbond', 'hbond')
         if isinstance(v, Decimal):
             v = str(v)
         humanized_result_dict[k] = v
