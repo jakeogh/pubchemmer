@@ -365,9 +365,9 @@ def describe(verbose,
 def humanize_result_dict(result_dict):
     humanized_result_dict = {}
     anchored_name = result_dict['pubchem_iupac_name']
-    anchored_mass = result_dict['exact_mass']
+    anchored_mass = result_dict['pubchem_exact_mass']
     for k, v in result_dict.items():
-        if k in ['cactvs_subskeys', 'iupac_inchikey']:
+        if k in ['cactvs_subskeys', 'pubchem_iupac_inchikey']:
             continue
         if not v:
             continue
