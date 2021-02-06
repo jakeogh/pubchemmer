@@ -362,6 +362,21 @@ def describe(verbose,
             import IPython; IPython.embed()
 
 
+def humanize_result_dict(result_dict):
+    humanized_result_dict = {}
+    anchored_name = result_dict['pubchem_iupac_name']
+    for k, v in result_dict.items():
+        if not v:
+            continue
+        if k.endswith('_name') and (k != 'pubchem_iupac_name'):
+            if v == anchored_name:
+                continue
+        k = k.replace('pubchem_', '')
+        humanized_result_dict[k] = v
+
+    return humanized_result_dict
+
+
 @cli.command(help="search for compound in pubchem_iupac_name column")
 @click.argument('match', type=str, nargs=1)
 @click.option('--verbose', is_flag=True)
@@ -396,8 +411,10 @@ def find(match,
         result_keys = result.keys()
         for index, match in enumerate(result.fetchall()):
             result_zip = zip(result_keys, match)
-            result_list = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
-            ic(index, result_list)
+            #result_dict = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
+            result_dict = {k: v for (k, v) in result_zip if v}
+            humanized_result_dict = humanize_result_dict(result_dict)
+            ic(index, humanized_result_dict)
 
         #ic(result_keys)
 
