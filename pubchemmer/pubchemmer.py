@@ -392,8 +392,12 @@ def find(match,
         query = "SELECT * from pubchem WHERE pubchem_compound_cid = '{}'".format(match)
 
     with self_contained_session(db_url=database) as session:
-        for index, match in enumerate(session.bind.execute(query).fetchall()):
+        result = session.bind.execute(query)
+        result_keys = result.keys()
+        for index, match in enumerate(result.fetchall()):
             ic(index, match)
+
+        ic(result_keys)
 
         if ipython:
             import IPython; IPython.embed()
