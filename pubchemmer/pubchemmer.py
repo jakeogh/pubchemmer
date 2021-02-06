@@ -365,11 +365,17 @@ def describe(verbose,
 def humanize_result_dict(result_dict):
     humanized_result_dict = {}
     anchored_name = result_dict['pubchem_iupac_name']
+    anchored_mass = result_dict['exact_mass']
     for k, v in result_dict.items():
+        if k in ['cactvs_subskeys', 'iupac_inchikey']:
+            continue
         if not v:
             continue
-        if k.endswith('_name') and (k != 'pubchem_iupac_name'):
+        if '_name' in k and (k != 'pubchem_iupac_name'):
             if v == anchored_name:
+                continue
+        if k.endswith('_weight'):
+            if str(anchored_mass).startswith(str(v)):
                 continue
         k = k.replace('pubchem_', '')
         humanized_result_dict[k] = v
