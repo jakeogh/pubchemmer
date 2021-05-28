@@ -17,7 +17,7 @@
 # pylint: disable=W0201     # attribute defined outside __init__
 
 import hashlib
-import os
+#import os
 import pprint
 import re
 import sys
@@ -29,7 +29,6 @@ import click
 import pandas
 import requests
 from enumerate_input import enumerate_input
-from icecream import ic
 from kcl.configops import click_read_config
 from kcl.configops import click_write_config_entry
 from kcl.sqla.delete_database import delete_database as really_delete_database
@@ -41,8 +40,17 @@ from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
 from pubchemmer.PubChem import PubChem
 from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
 
-ic.configureOutput(includeContext=True)
 
+def eprint(*args, **kwargs):
+    if 'file' in kwargs.keys():
+        kwargs.pop('file')
+    print(*args, file=sys.stderr, **kwargs)
+
+
+try:
+    from icecream import ic  # https://github.com/gruns/icecream
+except ImportError:
+    ic = eprint
 
 
 def md5_hash_file(path, block_size=256 * 128 * 2):
@@ -96,7 +104,7 @@ def cli(ctx,
     ctx.obj['verbose'] = verbose
     ctx.obj['debug'] = debug
     ctx.obj['appname'] = 'pubchemmer'
-    database = 'postgresql://postgresql@localhost/' + ctx.obj['appname']
+    database = 'postgresql://postgres@localhost/' + ctx.obj['appname']
     ctx.obj['database'] = database
 
 
