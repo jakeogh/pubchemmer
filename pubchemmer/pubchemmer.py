@@ -43,7 +43,6 @@ from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
 
 ic.configureOutput(includeContext=True)
 
-APP_NAME = 'pubchemmer'
 
 
 def md5_hash_file(path, block_size=256 * 128 * 2):
@@ -53,11 +52,52 @@ def md5_hash_file(path, block_size=256 * 128 * 2):
             md5.update(chunk)
     return md5.hexdigest()
 
+def nl_iff_tty(*, printn, ipython):
+    null = not printn
+    end = '\n'
+    if null:
+        end = '\x00'
+    if sys.stdout.isatty():
+        end = '\n'
+        assert not ipython
+    return end
+
+
+def nevd(*, ctx,
+         printn: bool,
+         ipython: bool,
+         verbose: bool,
+         debug: bool,
+         ):
+
+    null = not printn
+    end = nl_iff_tty(printn=printn, ipython=False)
+    if verbose:
+        ctx.obj['verbose'] = verbose
+    verbose = ctx.obj['verbose']
+    if debug:
+        ctx.obj['debug'] = debug
+    debug = ctx.obj['debug']
+
+    return null, end, verbose, debug
+
+
 
 @click.group()
+@click.option('--verbose', is_flag=True)
+@click.option('--debug', is_flag=True)
 @click.pass_context
-def cli(ctx):
-    pass
+def cli(ctx,
+        verbose: bool,
+        debug: bool,
+        ):
+
+    ctx.ensure_object(dict)
+    ctx.obj['verbose'] = verbose
+    ctx.obj['debug'] = debug
+    ctx.obj['appname'] = 'pubchemmer'
+    database = 'postgresql://postgresql@localhost/' + ctx.obj['appname']
+    ctx.obj['database'] = database
 
 
 def parse_pubchem_sdtags(content, verbose=False):
@@ -117,10 +157,12 @@ def parse_pubchem_sdtags(content, verbose=False):
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
-def update_sdf_tags_from_pubchem(verbose: bool,
+@click.pass_context
+def update_sdf_tags_from_pubchem(ctx,
+                                 verbose: bool,
                                  debug: bool,
-                                 ipython: bool,):
-    global APP_NAME
+                                 ipython: bool,
+                                 ):
 
     url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
     response = requests.get(url)
@@ -137,7 +179,7 @@ def update_sdf_tags_from_pubchem(verbose: bool,
     for key in sdf_keys_dict.keys():
         #ic(key)
         config, config_mtime = click_write_config_entry(click_instance=click,
-                                                        app_name=APP_NAME,
+                                                        app_name=ctx.obj['appname'],
                                                         section=section,
                                                         key=key,
                                                         value=sdf_keys_dict[key],
@@ -156,28 +198,30 @@ def update_sdf_tags_from_pubchem(verbose: bool,
 @click.option('--start-cid', type=int)
 @click.option('--delete-database', is_flag=True)
 @click.option("--null", is_flag=True)
-def dbimport(paths,
-             add,
-             verbose,
-             debug,
-             ipython,
-             simulate,
-             count,
-             start_cid,
-             delete_database,
-             null):
+@click.pass_context
+def dbimport(ctx,
+             paths,
+             add: bool,
+             verbose: bool,
+             debug: bool,
+             ipython: bool,
+             simulate: bool,
+             count: int,
+             start_cid: int,
+             delete_database: bool,
+             null: bool,
+             ):
 
     total_records = 155000000
 
-    global APP_NAME
-    database = 'postgresql://postgres@localhost/' + APP_NAME
+    database = ctx.obj['database']
     if delete_database:
         if not simulate:
             really_delete_database(database)
 
 
     config, config_mtime = click_read_config(click_instance=click,
-                                             app_name=APP_NAME,
+                                             app_name=ctx.obj['appname'],
                                              verbose=verbose,
                                              debug=debug,)
     if verbose:
@@ -279,15 +323,17 @@ def dbimport(paths,
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
-def last_cid(verbose,
-             debug,
-             ipython):
+@click.pass_context
+def last_cid(ctx,
+             verbose: bool,
+             debug: bool,
+             ipython: bool,
+             ):
 
-    global APP_NAME
-    database = 'postgresql://postgresql@localhost/' + APP_NAME
+    database = ctx.obj['database']
 
     config, config_mtime = click_read_config(click_instance=click,
-                                             app_name=APP_NAME,
+                                             app_name=ctx.obj['appname'],
                                              verbose=verbose,
                                              debug=debug,)
     if verbose:
@@ -307,15 +353,16 @@ def last_cid(verbose,
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
-def indexes(verbose,
-            debug,
-            ipython):
+@click.pass_context
+def indexes(ctx,
+            verbose: bool,
+            debug: bool,
+            ipython: bool,
+            ):
 
-    global APP_NAME
-    database = 'postgresql://postgresql@localhost/' + APP_NAME
-
+    database = ctx.obj['database']
     config, config_mtime = click_read_config(click_instance=click,
-                                             app_name=APP_NAME,
+                                             app_name=ctx.obj['appname'],
                                              verbose=verbose,
                                              debug=debug,)
     if verbose:
@@ -336,15 +383,16 @@ def indexes(verbose,
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
-def describe(verbose,
-             debug,
-             ipython):
+@click.pass_context
+def describe(ctx,
+             verbose: bool,
+             debug: bool,
+             ipython: bool,
+             ):
 
-    global APP_NAME
-    database = 'postgresql://postgresql@localhost/' + APP_NAME
-
+    database = ctx.obj['database']
     config, config_mtime = click_read_config(click_instance=click,
-                                             app_name=APP_NAME,
+                                             app_name=ctx.obj['appname'],
                                              verbose=verbose,
                                              debug=debug,)
     if verbose:
@@ -421,19 +469,20 @@ def humanize_result_dict(result_dict):
 @click.option('--cid', is_flag=True)
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
-def find(match,
-         verbose,
-         cid,
-         debug,
-         ipython):
+@click.pass_context
+def find(ctx,
+         match: str,
+         verbose: bool,
+         cid: bool,
+         debug: bool,
+         ipython: bool,
+         ):
 
     assert match
 
-    global APP_NAME
-    database = 'postgresql://postgresql@localhost/' + APP_NAME
-
+    database = ctx.obj['database']
     config, config_mtime = click_read_config(click_instance=click,
-                                             app_name=APP_NAME,
+                                             app_name=ctx.obj['appname'],
                                              verbose=verbose,
                                              debug=debug,)
     if verbose:
@@ -464,16 +513,18 @@ def find(match,
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
 @click.option("--null", is_flag=True)
-def dumpconfig(verbose,
-               debug,
-               ipython,
-               null):
+@click.pass_context
+def dumpconfig(ctx,
+               verbose: bool,
+               debug: bool,
+               ipython: bool,
+               null: bool,
+               ):
 
-    global APP_NAME
-    database = 'postgresql://postgresql@localhost/' + APP_NAME
+    database = ctx.obj['database']
 
     config, config_mtime = click_read_config(click_instance=click,
-                                             app_name=APP_NAME,
+                                             app_name=ctx.obj['appname'],
                                              verbose=verbose,
                                              debug=debug,)
     pprint.pprint(config)
@@ -490,10 +541,13 @@ def dumpconfig(verbose,
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
 @click.option("--null", is_flag=True)
-def generate_sqlalchemy_model(verbose,
-                              debug,
-                              ipython,
-                              null):
+@click.pass_context
+def generate_sqlalchemy_model(ctx,
+                              verbose: bool,
+                              debug: bool,
+                              ipython: bool,
+                              null: bool,
+                              ):
     output_template = '''#!/usr/bin/env python3
 
 ### AUTO GENERATED FILE ###
@@ -537,10 +591,13 @@ class PubChem(Base):
 @click.option('--debug', is_flag=True)
 @click.option('--ipython', is_flag=True)
 @click.option("--null", is_flag=True)
-def dbquery(verbose,
-            debug,
-            ipython,
-            null):
+@click.pass_context
+def dbquery(ctx,
+            verbose: bool,
+            debug: bool,
+            ipython: bool,
+            null: bool,
+            ):
 
     '''
     session.bind.execute("select column_name,
@@ -548,11 +605,10 @@ def dbquery(verbose,
                           character_maximum_length from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'").fetchall()
     '''
 
-    global APP_NAME
-    database = 'postgresql://postgresql@localhost/' + APP_NAME
+    database = ctx.obj['database']
 
     config, config_mtime = click_read_config(click_instance=click,
-                                             app_name=APP_NAME,
+                                             app_name=ctx.obj['appname'],
                                              verbose=verbose,
                                              debug=debug,)
     if verbose:
