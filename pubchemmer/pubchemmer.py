@@ -32,8 +32,7 @@ from enumerate_input import enumerate_input
 from icecream import ic
 from kcl.configops import click_read_config
 from kcl.configops import click_write_config_entry
-from kcl.sqla.delete_database import \
-    delete_database as really_delete_database
+from kcl.sqla.delete_database import delete_database as really_delete_database
 from kcl.sqla.model.BaseMixin import BASE
 from kcl.sqla.self_contained_session import self_contained_session
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
@@ -171,7 +170,7 @@ def dbimport(paths,
     total_records = 155000000
 
     global APP_NAME
-    database = 'postgresql://postgresql@localhost/' + APP_NAME
+    database = 'postgresql://postgres@localhost/' + APP_NAME
     if delete_database:
         if not simulate:
             really_delete_database(database)
