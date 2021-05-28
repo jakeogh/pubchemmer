@@ -32,10 +32,10 @@ from enumerate_input import enumerate_input
 from icecream import ic
 from kcl.configops import click_read_config
 from kcl.configops import click_write_config_entry
-from kcl.sqlalchemy.delete_database import \
+from kcl.sqla.delete_database import \
     delete_database as really_delete_database
-from kcl.sqlalchemy.model.BaseMixin import BASE
-from kcl.sqlalchemy.self_contained_session import self_contained_session
+from kcl.sqla.model.BaseMixin import BASE
+from kcl.sqla.self_contained_session import self_contained_session
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
     molecule_dict_generator
 
@@ -171,7 +171,7 @@ def dbimport(paths,
     total_records = 155000000
 
     global APP_NAME
-    database = 'postgres://postgres@localhost/' + APP_NAME
+    database = 'postgresql://postgresql@localhost/' + APP_NAME
     if delete_database:
         if not simulate:
             really_delete_database(database)
@@ -285,7 +285,7 @@ def last_cid(verbose,
              ipython):
 
     global APP_NAME
-    database = 'postgres://postgres@localhost/' + APP_NAME
+    database = 'postgresql://postgresql@localhost/' + APP_NAME
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
@@ -313,7 +313,7 @@ def indexes(verbose,
             ipython):
 
     global APP_NAME
-    database = 'postgres://postgres@localhost/' + APP_NAME
+    database = 'postgresql://postgresql@localhost/' + APP_NAME
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
@@ -342,7 +342,7 @@ def describe(verbose,
              ipython):
 
     global APP_NAME
-    database = 'postgres://postgres@localhost/' + APP_NAME
+    database = 'postgresql://postgresql@localhost/' + APP_NAME
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
@@ -431,7 +431,7 @@ def find(match,
     assert match
 
     global APP_NAME
-    database = 'postgres://postgres@localhost/' + APP_NAME
+    database = 'postgresql://postgresql@localhost/' + APP_NAME
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
@@ -471,7 +471,7 @@ def dumpconfig(verbose,
                null):
 
     global APP_NAME
-    database = 'postgres://postgres@localhost/' + APP_NAME
+    database = 'postgresql://postgresql@localhost/' + APP_NAME
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,
@@ -550,7 +550,7 @@ def dbquery(verbose,
     '''
 
     global APP_NAME
-    database = 'postgres://postgres@localhost/' + APP_NAME
+    database = 'postgresql://postgresql@localhost/' + APP_NAME
 
     config, config_mtime = click_read_config(click_instance=click,
                                              app_name=APP_NAME,

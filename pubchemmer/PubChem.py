@@ -7,7 +7,7 @@ from sqlalchemy import Integer
 from sqlalchemy import Boolean
 from sqlalchemy import Numeric
 
-from kcl.sqlalchemy.model.BaseMixin import BASE
+from kcl.sqla.model.BaseMixin import BASE
 #Base = declarative_base()
 
 
