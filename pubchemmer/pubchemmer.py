@@ -16,8 +16,7 @@
 # pylint: disable=E1101     # no member for base
 # pylint: disable=W0201     # attribute defined outside __init__
 
-import hashlib
-#import os
+#import hashlib
 import pprint
 import re
 import sys
@@ -26,86 +25,22 @@ from decimal import Decimal
 from pathlib import Path
 
 import click
-import pandas
 import requests
+from asserttool import eprint
+from asserttool import ic
+from asserttool import nevd
+from configtool import click_read_config
+from configtool import click_write_config_entry
+from databasetool import delete_database as really_delete_database
 from enumerate_input import enumerate_input
-from kcl.configops import click_read_config
-from kcl.configops import click_write_config_entry
-from kcl.sqla.delete_database import delete_database as really_delete_database
-from kcl.sqla.model.BaseMixin import BASE
-from kcl.sqla.self_contained_session import self_contained_session
+from hashtool import md5_hash_file
+from sqlalchemytool import BASE
+from sqlalchemytool import self_contained_session
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
     molecule_dict_generator
 
 from pubchemmer.PubChem import PubChem
 from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
-
-
-def eprint(*args, **kwargs):
-    if 'file' in kwargs.keys():
-        kwargs.pop('file')
-    print(*args, file=sys.stderr, **kwargs)
-
-
-try:
-    from icecream import ic  # https://github.com/gruns/icecream
-except ImportError:
-    ic = eprint
-
-
-def md5_hash_file(path, block_size=256 * 128 * 2):
-    md5 = hashlib.md5()
-    with open(path, 'rb') as f:
-        for chunk in iter(lambda: f.read(block_size), b''):
-            md5.update(chunk)
-    return md5.hexdigest()
-
-def nl_iff_tty(*, printn, ipython):
-    null = not printn
-    end = '\n'
-    if null:
-        end = '\x00'
-    if sys.stdout.isatty():
-        end = '\n'
-        assert not ipython
-    return end
-
-
-def nevd(*, ctx,
-         printn: bool,
-         ipython: bool,
-         verbose: bool,
-         debug: bool,
-         ):
-
-    null = not printn
-    end = nl_iff_tty(printn=printn, ipython=False)
-    if verbose:
-        ctx.obj['verbose'] = verbose
-    verbose = ctx.obj['verbose']
-    if debug:
-        ctx.obj['debug'] = debug
-    debug = ctx.obj['debug']
-
-    return null, end, verbose, debug
-
-
-
-@click.group()
-@click.option('--verbose', is_flag=True)
-@click.option('--debug', is_flag=True)
-@click.pass_context
-def cli(ctx,
-        verbose: bool,
-        debug: bool,
-        ):
-
-    ctx.ensure_object(dict)
-    ctx.obj['verbose'] = verbose
-    ctx.obj['debug'] = debug
-    ctx.obj['appname'] = 'pubchemmer'
-    database = 'postgresql://postgres@localhost/' + ctx.obj['appname']
-    ctx.obj['database'] = database
 
 
 def parse_pubchem_sdtags(content, verbose=False):
@@ -159,6 +94,24 @@ def parse_pubchem_sdtags(content, verbose=False):
 
     #assert 'mol_chiral_flag' in sdf_keys_dict.keys()
     return sdf_keys_dict
+
+
+@click.group()
+@click.option('--verbose', is_flag=True)
+@click.option('--debug', is_flag=True)
+@click.pass_context
+def cli(ctx,
+        verbose: bool,
+        debug: bool,
+        ):
+
+    ctx.ensure_object(dict)
+    ctx.obj['verbose'] = verbose
+    ctx.obj['debug'] = debug
+    ctx.obj['appname'] = 'pubchemmer'
+    database = 'postgresql://postgres@localhost/' + ctx.obj['appname']
+    ctx.obj['database'] = database
+
 
 
 @cli.command()
@@ -257,7 +210,7 @@ def dbimport(ctx,
                                            head=None,
                                            tail=None,
                                            verbose=verbose):
-            path = Path(path)
+            path = Path(path).expanduser()
             last_cid_in_file = int(path.name.split("_")[-1].split('.')[0])
             ic(last_cid_in_file)
             if start_cid:
@@ -357,6 +310,7 @@ def last_cid(ctx,
         if ipython:
             import IPython; IPython.embed()
 
+
 @cli.command(help="list table indexes")
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
@@ -386,6 +340,7 @@ def indexes(ctx,
 
         if ipython:
             import IPython; IPython.embed()
+
 
 @cli.command(help="list database table columns")
 @click.option('--verbose', is_flag=True)
@@ -516,6 +471,7 @@ def find(ctx,
         if ipython:
             import IPython; IPython.embed()
 
+
 @cli.command()
 @click.option('--verbose', is_flag=True)
 @click.option('--debug', is_flag=True)
@@ -543,6 +499,7 @@ def dumpconfig(ctx,
 
         if ipython:
             import IPython; IPython.embed()
+
 
 @cli.command()
 @click.option('--verbose', is_flag=True)
@@ -593,6 +550,7 @@ class PubChem(Base):
 
     if ipython:
         import IPython; IPython.embed()
+
 
 @cli.command()
 @click.option('--verbose', is_flag=True)
