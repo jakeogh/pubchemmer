@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 #from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column
-from sqlalchemy import Text
-from sqlalchemy import Integer
 from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import Integer
 from sqlalchemy import Numeric
+from sqlalchemy import Text
+from sqlalchemytool import BASE
 
-from kcl.sqla.model.BaseMixin import BASE
 #Base = declarative_base()
 
 
