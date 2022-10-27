@@ -9,7 +9,7 @@ from traitlets.config.loader import Config
 from IPython.core.magic import register_line_magic
 from IPython.terminal.prompts import Prompts, Token
 from IPython.terminal.embed import InteractiveShellEmbed
-from icecream import ic
+from asserttool import ic
 
 from IPython.core.magic import (Magics, magics_class, line_magic, cell_magic, line_cell_magic)
 from IPython.core.magic_arguments import (argument, magic_arguments, parse_argstring)
