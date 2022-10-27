@@ -22,20 +22,16 @@ import sys
 import time
 from decimal import Decimal
 from pathlib import Path
-from typing import Union
 
 import click
 import requests
 from asserttool import ic
 from clicktool import click_add_options
 from clicktool import click_global_options
-from clicktool import tv
 from configtool import click_read_config
 from configtool import click_write_config_entry
 from databasetool import delete_database as really_delete_database
-from eprint import eprint
 from hashtool import md5_hash_file
-from mptool import unmp
 from sqlalchemytool import BASE
 from sqlalchemytool import self_contained_session
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
@@ -103,7 +99,7 @@ def humanize_result_dict(result_dict: dict):
     return humanized_result_dict
 
 
-def parse_pubchem_sdtags(content: bytes, verbose: Union[bool, int, float]):
+def parse_pubchem_sdtags(content: bytes, verbose: bool | int | float):
     assert isinstance(content, bytes)
     content = content.decode("utf8")
     if verbose:
@@ -156,14 +152,14 @@ def parse_pubchem_sdtags(content: bytes, verbose: Union[bool, int, float]):
     return sdf_keys_dict
 
 
-@click.group(no_args_is_help=True)
+@click.group(no_args_is_help=True, cls=AHGroup)
 @click_add_options(click_global_options)
 @click.pass_context
 def cli(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
 
     ctx.ensure_object(dict)
@@ -178,9 +174,9 @@ def cli(
 @click_add_options(click_global_options)
 def update_sdf_tags_from_pubchem(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
 
     url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
@@ -218,9 +214,9 @@ def dbimport(
     ctx,
     paths,
     add: bool,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
     simulate: bool,
     count: int,
     start_cid: int,
@@ -330,9 +326,9 @@ def dbimport(
 @click.pass_context
 def last_cid(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
 
     database = ctx.obj["database"]
@@ -358,9 +354,9 @@ def last_cid(
 @click.pass_context
 def indexes(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
 
     database = ctx.obj["database"]
@@ -386,9 +382,9 @@ def indexes(
 @click.pass_context
 def describe(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
 
     database = ctx.obj["database"]
@@ -417,9 +413,9 @@ def describe(
 def find(
     ctx,
     match: str,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
     cid: bool,
 ):
 
@@ -457,9 +453,9 @@ def find(
 @click.pass_context
 def dumpconfig(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
 
     database = ctx.obj["database"]
@@ -481,9 +477,9 @@ def dumpconfig(
 @click.pass_context
 def generate_sqlalchemy_model(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
     output_template = """#!/usr/bin/env python3
 
@@ -526,9 +522,9 @@ class PubChem(Base):
 @click.pass_context
 def dbquery(
     ctx,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     verbose_inf: bool,
-    dict_input: bool,
+    dict_output: bool,
 ):
 
     """
