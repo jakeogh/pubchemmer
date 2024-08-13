@@ -172,7 +172,7 @@ def cli(
     )
 
     ctx.obj["appname"] = "pubchemmer"
-    database = "postgresql://postgres@localhost/" + ctx.obj["appname"]
+    database = "postgresql+psycopg://postgres@localhost/" + ctx.obj["appname"]
     ctx.obj["database"] = database
 
 
@@ -248,7 +248,7 @@ def dbimport(
     database = ctx.obj["database"]
     if delete_database:
         if not simulate:
-            really_delete_database(database, dont_warn=False, verbose=True)
+            really_delete_database(database, dont_warn=False)
 
     config, config_mtime = click_read_config(
         click_instance=click,
