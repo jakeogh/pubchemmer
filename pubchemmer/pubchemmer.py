@@ -366,8 +366,9 @@ def last_cid(
     query = "SELECT MAX(pubchem.pubchem_compound_cid) from pubchem"
 
     with self_contained_session(db_url=database) as session:
-        for index, match in enumerate(session.bind.execute(query).fetchone()):
-            ic(index, match)
+        with session.bind.connect() as conn:
+            for index, match in enumerate(conn.execute(query).fetchone()):
+                ic(index, match)
 
 
 @cli.command(help="list table indexes")
