@@ -26,11 +26,14 @@ from pathlib import Path
 import click
 import requests
 from asserttool import ic
+from click_auto_help import AHGroup
 from clicktool import click_add_options
 from clicktool import click_global_options
+from clicktool import tvicgvd
 from configtool import click_read_config
 from configtool import click_write_config_entry
 from databasetool import delete_database as really_delete_database
+from globalverbose import gvd
 from hashtool import md5_hash_file
 from sqlalchemytool import BASE
 from sqlalchemytool import self_contained_session
@@ -99,11 +102,10 @@ def humanize_result_dict(result_dict: dict):
     return humanized_result_dict
 
 
-def parse_pubchem_sdtags(content: bytes, verbose: bool | int | float):
+def parse_pubchem_sdtags(content: bytes):
     assert isinstance(content, bytes)
     content = content.decode("utf8")
-    if verbose:
-        ic(content)
+    ic(content)
 
     preamble = True
     body = False
@@ -157,13 +159,18 @@ def parse_pubchem_sdtags(content: bytes, verbose: bool | int | float):
 @click.pass_context
 def cli(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
 
-    ctx.ensure_object(dict)
-    ctx.obj["verbose"] = verbose
     ctx.obj["appname"] = "pubchemmer"
     database = "postgresql://postgres@localhost/" + ctx.obj["appname"]
     ctx.obj["database"] = database
@@ -174,17 +181,24 @@ def cli(
 @click_add_options(click_global_options)
 def update_sdf_tags_from_pubchem(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
 
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
     url = "https://ftp.ncbi.nlm.nih.gov/pubchem/data_spec/pubchem_sdtags.txt"
     response = requests.get(url)
     content = response.content
-    sdf_keys_dict = parse_pubchem_sdtags(content, verbose=False)
+    sdf_keys_dict = parse_pubchem_sdtags(content)
 
-    if verbose:
+    if ic.enabled:
         pprint.pprint(sdf_keys_dict)
 
     section = "sdf_keys"
@@ -197,7 +211,6 @@ def update_sdf_tags_from_pubchem(
             key=key,
             value=sdf_keys_dict[key],
             keep_case=True,
-            verbose=verbose,
         )
 
 
@@ -214,34 +227,38 @@ def dbimport(
     ctx,
     paths,
     add: bool,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
     simulate: bool,
     count: int,
     start_cid: int,
     delete_database: bool,
+    verbose: bool = False,
 ):
 
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
     total_records = 155000000
 
     database = ctx.obj["database"]
     if delete_database:
         if not simulate:
-            really_delete_database(database, dont_warn=False, verbose=verbose)
+            really_delete_database(database, dont_warn=False, verbose=True)
 
     config, config_mtime = click_read_config(
         click_instance=click,
         app_name=ctx.obj["appname"],
-        verbose=verbose,
     )
-    if verbose:
-        ic(config, config_mtime)
+    ic(config, config_mtime)
 
     # primary_key_created = False
-    with self_contained_session(db_url=database, verbose=verbose) as session:
-        if verbose:
-            ic(session)
+    with self_contained_session(db_url=database) as session:
+        ic(session)
 
         ic(BASE)
         BASE.metadata.create_all(session.bind)
@@ -267,13 +284,13 @@ def dbimport(
                 continue
 
             import_start_time = time.time()  # per sdf.gz
-            md5_hash = md5_hash_file(path, verbose=verbose)
+            md5_hash = md5_hash_file(path)
             expected_md5 = Path(path.as_posix() + ".md5").read_text().split()[0]
             ic(md5_hash)
             ic(expected_md5)
             assert md5_hash == expected_md5
             for mindex, mdict in enumerate(
-                molecule_dict_generator(path=path.as_posix(), verbose=verbose)
+                molecule_dict_generator(path=path.as_posix())
             ):
                 if start_cid:
                     if int(mdict["PUBCHEM_COMPOUND_CID"]) < start_cid:
@@ -288,8 +305,7 @@ def dbimport(
                     if key not in mdict.keys():
                         mdict[key] = ""
 
-                if verbose:
-                    ic(mdict)
+                ic(mdict)
 
                 mdict = {k.lower(): v for k, v in mdict.items()}
                 mdict = {k.replace(" ", "_"): v for k, v in mdict.items()}
@@ -326,25 +342,30 @@ def dbimport(
 @click.pass_context
 def last_cid(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
 
     database = ctx.obj["database"]
 
     config, config_mtime = click_read_config(
         click_instance=click,
         app_name=ctx.obj["appname"],
-        verbose=verbose,
     )
-    if verbose:
-        ic(config, config_mtime)
+    ic(config, config_mtime)
 
     # query = "SELECT pubchem.pubchem_compound_cid from pubchem ORDER BY pubchem.pubchem_compound_cid"
     query = "SELECT MAX(pubchem.pubchem_compound_cid) from pubchem"
 
-    with self_contained_session(db_url=database, verbose=verbose) as session:
+    with self_contained_session(db_url=database) as session:
         for index, match in enumerate(session.bind.execute(query).fetchone()):
             ic(index, match)
 
@@ -354,25 +375,30 @@ def last_cid(
 @click.pass_context
 def indexes(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
 
     database = ctx.obj["database"]
     config, config_mtime = click_read_config(
         click_instance=click,
         app_name=ctx.obj["appname"],
-        verbose=verbose,
     )
-    if verbose:
-        ic(config, config_mtime)
+    ic(config, config_mtime)
 
     # query = "SELECT pubchem.pubchem_compound_cid from pubchem ORDER BY pubchem.pubchem_compound_cid"
     query = "SELECT * FROM pg_indexes WHERE tablename = 'pubchem';"
 
     # ic('column_name, data_type, character_maximum_length, column_default, is_nullable')
-    with self_contained_session(db_url=database, verbose=verbose) as session:
+    with self_contained_session(db_url=database) as session:
         for index, match in enumerate(session.bind.execute(query).fetchall()):
             ic(index, match)
 
@@ -382,25 +408,30 @@ def indexes(
 @click.pass_context
 def describe(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
 
     database = ctx.obj["database"]
     config, config_mtime = click_read_config(
         click_instance=click,
         app_name=ctx.obj["appname"],
-        verbose=verbose,
     )
-    if verbose:
-        ic(config, config_mtime)
+    ic(config, config_mtime)
 
     # query = "SELECT pubchem.pubchem_compound_cid from pubchem ORDER BY pubchem.pubchem_compound_cid"
     query = "select column_name, data_type, character_maximum_length, column_default, is_nullable from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem';"
 
     ic("column_name, data_type, character_maximum_length, column_default, is_nullable")
-    with self_contained_session(db_url=database, verbose=verbose) as session:
+    with self_contained_session(db_url=database) as session:
         for index, match in enumerate(session.bind.execute(query).fetchall()):
             ic(index, match)
 
@@ -413,11 +444,18 @@ def describe(
 def find(
     ctx,
     match: str,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
     cid: bool,
+    verbose: bool = False,
 ):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
 
     assert match
 
@@ -425,10 +463,8 @@ def find(
     config, config_mtime = click_read_config(
         click_instance=click,
         app_name=ctx.obj["appname"],
-        verbose=verbose,
     )
-    if verbose:
-        ic(config, config_mtime)
+    ic(config, config_mtime)
 
     if not cid:
         query = "SELECT * from pubchem WHERE pubchem.pubchem_iupac_name LIKE '%%{}%%' ORDER BY pubchem_exact_mass DESC".format(
@@ -437,7 +473,7 @@ def find(
     else:
         query = "SELECT * from pubchem WHERE pubchem_compound_cid = '{}'".format(match)
 
-    with self_contained_session(db_url=database, verbose=verbose) as session:
+    with self_contained_session(db_url=database) as session:
         result = session.bind.execute(query)
         result_keys = result.keys()
         for index, match in enumerate(result.fetchall()):
@@ -453,20 +489,26 @@ def find(
 @click.pass_context
 def dumpconfig(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
 
     database = ctx.obj["database"]
 
     config, config_mtime = click_read_config(
         click_instance=click,
         app_name=ctx.obj["appname"],
-        verbose=verbose,
     )
     pprint.pprint(config)
-    with self_contained_session(db_url=database, verbose=verbose) as session:
+    with self_contained_session(db_url=database) as session:
         query = "select * from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'"
         for index, match in enumerate(session.bind.execute(query).fetchall()):
             ic(index, match)
@@ -477,10 +519,17 @@ def dumpconfig(
 @click.pass_context
 def generate_sqlalchemy_model(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
     output_template = """#!/usr/bin/env python3
 
 ### AUTO GENERATED FILE ###
@@ -522,27 +571,30 @@ class PubChem(Base):
 @click.pass_context
 def dbquery(
     ctx,
-    verbose: bool | int | float,
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool = False,
 ):
-
     """
     session.bind.execute("select column_name,
                           data_type,
                           character_maximum_length from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'").fetchall()
     """
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
 
     database = ctx.obj["database"]
 
     config, config_mtime = click_read_config(
         click_instance=click,
         app_name=ctx.obj["appname"],
-        verbose=verbose,
     )
-    if verbose:
-        ic(config, config_mtime)
+    ic(config, config_mtime)
 
-    with self_contained_session(db_url=database, verbose=verbose) as session:
-        if verbose:
-            ic(session)
+    with self_contained_session(db_url=database) as session:
+        ic(session)
