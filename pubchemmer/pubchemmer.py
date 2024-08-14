@@ -483,6 +483,7 @@ def find_by_mass_range(
                 result_zip = zip(result_keys, match)
                 # result_dict = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
                 result_dict = {k: v for (k, v) in result_zip if v}
+                icp(result_dict)
                 humanized_result_dict = humanize_result_dict(result_dict)
                 icp(index, humanized_result_dict)
 
