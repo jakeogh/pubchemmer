@@ -328,6 +328,7 @@ def dbimport(
 
                 mdict = {k.lower(): v for k, v in mdict.items()}
                 mdict = {k.replace(" ", "_"): v for k, v in mdict.items()}
+                assert False  # need to add m/z field
                 for key in mdict.keys():
                     # assert key in SDF_FIELD_TYPES.keys()
                     key_type = SDF_FIELD_TYPES[key]

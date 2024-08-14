@@ -1,19 +1,23 @@
 ```
-$ pubchemmer --help
 Usage: pubchemmer [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  --help  Show this message and exit.
+  --verbose
+  --dict
+  --verbose-inf
+  --help         Show this message and exit.
 
 Commands:
-  dbimport
+  dbimport                      import pubchem sdf files
   dbquery                       session.bind.execute("select column_name,...
-  describe
+  describe                      list database table columns
   dumpconfig
-  find
+  find                          search for compound in pubchem_iupac_name...
+  find-numeric-field-by-range   search for compound with the specified...
   generate-sqlalchemy-model
-  indexes
-  last-cid
+  humanize-stdin-dicts          humanize field names from messagepacked...
+  indexes                       list table indexes
+  last-cid                      get last compound id (pubchem CID) in...
   update-sdf-tags-from-pubchem
 
 
