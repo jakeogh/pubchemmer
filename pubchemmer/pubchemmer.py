@@ -36,6 +36,7 @@ from configtool import click_write_config_entry
 from databasetool import delete_database as really_delete_database
 from globalverbose import gvd
 from hashtool import md5_hash_file
+from mptool import output
 from sqlalchemy import text
 from sqlalchemytool import BASE
 from sqlalchemytool import self_contained_session
@@ -446,17 +447,17 @@ def describe(
                 icp(index, match)
 
 
-@cli.command(
-    help="search for compound with pubchem_exact_mass column between two floats"
-)
-@click.argument("min_mass", type=float, nargs=1)
-@click.argument("max_mass", type=float, nargs=1)
+@cli.command(help="search for compound with the specified column between two floats")
+@click.argument("col_name", type=str, nargs=1)
+@click.argument("min_value", type=float, nargs=1)
+@click.argument("max_value", type=float, nargs=1)
 @click_add_options(click_global_options)
 @click.pass_context
-def find_by_mass_range(
+def find_numeric_field_by_range(
     ctx,
-    min_mass: float,
-    max_mass: float,
+    col_name: str,
+    min_value: float,
+    max_value: float,
     verbose_inf: bool,
     dict_output: bool,
     verbose: bool = False,
@@ -476,7 +477,7 @@ def find_by_mass_range(
     )
     ic(config, config_mtime)
 
-    query = f"SELECT * from pubchem WHERE pubchem.pubchem_exact_mass BETWEEN {min_mass} and {max_mass} ORDER BY pubchem_exact_mass DESC"
+    query = f"SELECT * from pubchem WHERE pubchem.{col_name} BETWEEN {min_value} and {max_value} ORDER BY pubchem_exact_mass DESC"
 
     with self_contained_session(db_url=database) as session:
         with session.bind.connect() as conn:
@@ -487,8 +488,14 @@ def find_by_mass_range(
                 # result_dict = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
                 result_dict = {k: v for (k, v) in result_zip if v}
                 icp(result_dict)
-                humanized_result_dict = humanize_result_dict(result_dict)
-                icp(index, humanized_result_dict)
+                # humanized_result_dict = humanize_result_dict(result_dict)
+                # icp(index, humanized_result_dict)
+                output(
+                    result_dict,
+                    reason=(col_name, min_value, max_value),
+                    tty=tty,
+                    dict_output=dict_output,
+                )
 
 
 @cli.command(help="search for compound in pubchem_iupac_name column")
