@@ -48,7 +48,10 @@ from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
 
 def humanize_result_dict(result_dict: dict):
     humanized_result_dict = {}
-    anchored_name = result_dict["pubchem_iupac_name"]
+    try:
+        anchored_name = result_dict["pubchem_iupac_name"]
+    except KeyError:
+        anchored_name = None
     anchored_mass = result_dict["pubchem_exact_mass"]
     anchored_count = result_dict["pubchem_component_count"]
     # smiles_anchor = result_dict['pubchem_openeye_iso_smiles']
