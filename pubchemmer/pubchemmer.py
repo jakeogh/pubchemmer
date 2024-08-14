@@ -456,7 +456,6 @@ def find_by_mass_range(
     max_mass: float,
     verbose_inf: bool,
     dict_output: bool,
-    cid: bool,
     verbose: bool = False,
 ):
     tty, verbose = tvicgvd(
