@@ -443,6 +443,51 @@ def describe(
                 icp(index, match)
 
 
+@cli.command(
+    help="search for compound with pubchem_exact_mass column between two floats"
+)
+@click.argument("min_mass", type=float, nargs=1)
+@click.argument("max_mass", type=float, nargs=1)
+@click_add_options(click_global_options)
+@click.pass_context
+def find_by_mass_range(
+    ctx,
+    min_mass: float,
+    max_mass: float,
+    verbose_inf: bool,
+    dict_output: bool,
+    cid: bool,
+    verbose: bool = False,
+):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
+
+    database = ctx.obj["database"]
+    config, config_mtime = click_read_config(
+        click_instance=click,
+        app_name=ctx.obj["appname"],
+    )
+    ic(config, config_mtime)
+
+    query = f"SELECT * from pubchem WHERE pubchem.pubchem_exact_mass BETWEEN {min_mass} and {max_mass} ORDER BY pubchem_exact_mass DESC"
+
+    with self_contained_session(db_url=database) as session:
+        with session.bind.connect() as conn:
+            result = conn.execute(text(query))
+            result_keys = result.keys()
+            for index, match in enumerate(result.fetchall()):
+                result_zip = zip(result_keys, match)
+                # result_dict = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
+                result_dict = {k: v for (k, v) in result_zip if v}
+                humanized_result_dict = humanize_result_dict(result_dict)
+                icp(index, humanized_result_dict)
+
+
 @cli.command(help="search for compound in pubchem_iupac_name column")
 @click.argument("match", type=str, nargs=1)
 @click.option("--cid", is_flag=True)
