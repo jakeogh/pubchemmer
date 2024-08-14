@@ -404,8 +404,9 @@ def indexes(
 
     # ic('column_name, data_type, character_maximum_length, column_default, is_nullable')
     with self_contained_session(db_url=database) as session:
-        for index, match in enumerate(session.bind.execute(query).fetchall()):
-            ic(index, match)
+        with session.bind.connect() as conn:
+            for index, match in enumerate(conn.execute(text(query)).fetchall()):
+                icp(index, match)
 
 
 @cli.command(help="list database table columns")
@@ -437,8 +438,9 @@ def describe(
 
     ic("column_name, data_type, character_maximum_length, column_default, is_nullable")
     with self_contained_session(db_url=database) as session:
-        for index, match in enumerate(session.bind.execute(query).fetchall()):
-            ic(index, match)
+        with session.bind.connect() as conn:
+            for index, match in enumerate(conn.execute(text(query)).fetchall()):
+                icp(index, match)
 
 
 @cli.command(help="search for compound in pubchem_iupac_name column")
@@ -479,14 +481,15 @@ def find(
         query = "SELECT * from pubchem WHERE pubchem_compound_cid = '{}'".format(match)
 
     with self_contained_session(db_url=database) as session:
-        result = session.bind.execute(query)
-        result_keys = result.keys()
-        for index, match in enumerate(result.fetchall()):
-            result_zip = zip(result_keys, match)
-            # result_dict = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
-            result_dict = {k: v for (k, v) in result_zip if v}
-            humanized_result_dict = humanize_result_dict(result_dict)
-            ic(index, humanized_result_dict)
+        with session.bind.connect() as conn:
+            result = conn.execute(text(query))
+            result_keys = result.keys()
+            for index, match in enumerate(result.fetchall()):
+                result_zip = zip(result_keys, match)
+                # result_dict = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
+                result_dict = {k: v for (k, v) in result_zip if v}
+                humanized_result_dict = humanize_result_dict(result_dict)
+                icp(index, humanized_result_dict)
 
 
 @cli.command()
@@ -513,10 +516,12 @@ def dumpconfig(
         app_name=ctx.obj["appname"],
     )
     pprint.pprint(config)
+    query = "select * from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'"
+
     with self_contained_session(db_url=database) as session:
-        query = "select * from INFORMATION_SCHEMA.COLUMNS where table_name = 'pubchem'"
-        for index, match in enumerate(session.bind.execute(query).fetchall()):
-            ic(index, match)
+        with session.bind.connect() as conn:
+            for index, match in enumerate(conn.execute(text(query)).fetchall()):
+                icp(index, match)
 
 
 @cli.command()
@@ -602,4 +607,9 @@ def dbquery(
     ic(config, config_mtime)
 
     with self_contained_session(db_url=database) as session:
-        ic(session)
+        icp(session)
+        with session.bind.connect() as conn:
+            icp(conn)
+            import IPython
+
+            IPython.embed()
