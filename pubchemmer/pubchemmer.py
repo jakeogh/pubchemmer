@@ -489,7 +489,6 @@ def find_numeric_field_by_range(
                 result_dict = {k: v for (k, v) in result_zip if v}
                 icp(result_dict)
                 # humanized_result_dict = humanize_result_dict(result_dict)
-                # icp(index, humanized_result_dict)
                 output(
                     result_dict,
                     reason=(col_name, min_value, max_value),
