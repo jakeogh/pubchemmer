@@ -47,6 +47,17 @@ from pubchemmer.PubChem import PubChem
 from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
 
 
+def decimal_values_to_str(some_dict):
+    new_dict = {}
+    for k, v in some_dict.items():
+        if isinstance(v, Decimal):
+            new_dict[k] = str(v)
+        else:
+            new_dict[k] = v
+
+    return new_dict
+
+
 def humanize_result_dict(result_dict: dict):
     humanized_result_dict = {}
     try:
@@ -490,7 +501,7 @@ def find_numeric_field_by_range(
                 icp(result_dict)
                 # humanized_result_dict = humanize_result_dict(result_dict)
                 output(
-                    result_dict,
+                    decimal_values_to_str(result_dict),
                     reason=(col_name, min_value, max_value),
                     tty=tty,
                     dict_output=dict_output,
