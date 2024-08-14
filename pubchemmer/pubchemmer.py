@@ -20,6 +20,7 @@ import pprint
 import re
 import sys
 import time
+from collections.abc import Sequence
 from decimal import Decimal
 from pathlib import Path
 
@@ -42,6 +43,7 @@ from sqlalchemytool import BASE
 from sqlalchemytool import self_contained_session
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
     molecule_dict_generator
+from unmp import unmp
 
 from pubchemmer.PubChem import PubChem
 from pubchemmer.sdf_field_types import SDF_FIELD_TYPES
@@ -388,6 +390,32 @@ def last_cid(
             icp(conn)
             for index, match in enumerate(conn.execute(text(query)).fetchone()):
                 icp(index, match)
+
+
+@cli.command(help="humanize field names from messagepacked dicts on stdin")
+@click_add_options(click_global_options)
+@click.pass_context
+def humanize_stdin_dicts(
+    ctx,
+    verbose_inf: bool,
+    dict_output: bool,
+    verbose: bool = False,
+):
+    tty, verbose = tvicgvd(
+        ctx=ctx,
+        verbose=verbose,
+        verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
+    )
+
+    iterator: Sequence[dict] = unmp(
+        valid_types=[dict],
+    )
+    for _dict in iterator:
+        output(
+            humanize_result_dict(_dict), reason=_dict, tty=tty, dict_output=dict_output
+        )
 
 
 @cli.command(help="list table indexes")
