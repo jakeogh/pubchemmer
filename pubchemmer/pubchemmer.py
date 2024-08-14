@@ -372,7 +372,7 @@ def last_cid(
         with session.bind.connect() as conn:
             icp(conn)
             for index, match in enumerate(conn.execute(text(query)).fetchone()):
-                ic(index, match)
+                icp(index, match)
 
 
 @cli.command(help="list table indexes")
