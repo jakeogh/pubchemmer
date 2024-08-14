@@ -36,6 +36,7 @@ from configtool import click_write_config_entry
 from databasetool import delete_database as really_delete_database
 from globalverbose import gvd
 from hashtool import md5_hash_file
+from sqlalchemy import text
 from sqlalchemytool import BASE
 from sqlalchemytool import self_contained_session
 from structure_data_file_sdf_parser.structure_data_file_sdf_parser import \
@@ -370,7 +371,7 @@ def last_cid(
         icp(type(session))
         with session.bind.connect() as conn:
             icp(conn)
-            for index, match in enumerate(conn.execute(query).fetchone()):
+            for index, match in enumerate(conn.execute(text(query)).fetchone()):
                 ic(index, match)
 
 
