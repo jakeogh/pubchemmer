@@ -26,6 +26,7 @@ from pathlib import Path
 import click
 import requests
 from asserttool import ic
+from asserttool import icp
 from click_auto_help import AHGroup
 from clicktool import click_add_options
 from clicktool import click_global_options
@@ -366,7 +367,9 @@ def last_cid(
     query = "SELECT MAX(pubchem.pubchem_compound_cid) from pubchem"
 
     with self_contained_session(db_url=database) as session:
+        icp(type(session))
         with session.bind.connect() as conn:
+            icp(conn)
             for index, match in enumerate(conn.execute(query).fetchone()):
                 ic(index, match)
 
