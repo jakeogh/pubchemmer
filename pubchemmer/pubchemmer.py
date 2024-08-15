@@ -114,6 +114,7 @@ def humanize_result_dict(result_dict: dict):
         k = k.replace("openbabel_symmetry_classes", "symmetry_classes")
         k = k.replace("total_charge", "charge")
         k = k.replace("heavy_atom_count", "heavy_atoms")
+        k = k.replace("generated_mass_to_charge", "m/z")
         if isinstance(v, Decimal):
             v = str(v)
         humanized_result_dict[k] = v
