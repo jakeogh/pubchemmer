@@ -103,6 +103,9 @@ def humanize_result_dict(result_dict: dict):
         if k == "pubchem_coordinate_type":
             if v == "1\n5\n255":
                 continue
+        if k == "generated_mass_to_charge":
+            v = round(v, 5)
+
         k = k.replace("pubchem_", "")
         k = k.replace("compound_cid", "cid")
         k = k.replace("molecular_formula", "formula")
