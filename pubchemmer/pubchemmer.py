@@ -531,7 +531,7 @@ def find_numeric_field_by_range(
                 result_zip = zip(result_keys, match)
                 # result_dict = {k.replace('pubchem_', ''): v for (k, v) in result_zip if v}
                 result_dict = {k: v for (k, v) in result_zip if v}
-                icp(result_dict)
+                ic(result_dict)
                 # humanized_result_dict = humanize_result_dict(result_dict)
                 output(
                     decimal_values_to_str(result_dict),
