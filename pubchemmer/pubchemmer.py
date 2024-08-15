@@ -520,7 +520,8 @@ def find_numeric_field_by_range(
     )
     ic(config, config_mtime)
 
-    query = f"SELECT * from pubchem WHERE pubchem.{col_name} BETWEEN {min_value} and {max_value} ORDER BY pubchem_exact_mass DESC"
+    # query = f"SELECT * from pubchem WHERE pubchem.{col_name} BETWEEN {min_value} and {max_value} ORDER BY pubchem_exact_mass DESC"
+    query = f"SELECT * from pubchem WHERE pubchem.{col_name} BETWEEN {min_value} and {max_value} ORDER BY {col_name} DESC"
 
     with self_contained_session(db_url=database) as session:
         with session.bind.connect() as conn:
